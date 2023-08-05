@@ -7,6 +7,8 @@ import { AppContext } from './../context/AppContext';
 import { css_global } from './../style/StyleGlobal';
 import url from './../endpoint/Endpoint';
 import { RequestApiPostWithToken } from './../endpoint/RequestApi';
+import { custom_toast } from './../component/ToastCustom';
+import { convert_number_coma } from './../component/HelperFunction';
 
 export default function ListKeranjang() {
   const [isLoading, setLoading] = useState(true);
@@ -27,7 +29,7 @@ export default function ListKeranjang() {
 
   const inputPricePembeli = (val) =>{
     if (val > 0) {
-      const convert_val = parseInt(val).toLocaleString();
+      const convert_val = convert_number_coma(val);
       setLabelPrice(convert_val)
     }else{
       setLabelPrice(0)
@@ -72,6 +74,45 @@ export default function ListKeranjang() {
     
   }
 
+  const removeChartMin1 = async (idChart) =>{
+      setLoading(true);
+      const url_add1 = `${url.end_point_dev}${url.remove_min_1}`;
+      const param = {id_keranjang_kasir : idChart }
+      const send_api = await RequestApiPostWithToken(url_add1,param, token_)
+      try {
+        refreshtList()
+      } catch (error) {
+        custom_toast("gagal kurangi keranjang")
+      }
+      setLoading(false);
+  }
+
+  const addChartPlus1 = async (idChart) =>{
+    setLoading(true);
+    const url_add1 = `${url.end_point_dev}${url.add_plus_1}`;
+    const param = {id_keranjang_kasir : idChart }
+    const send_api = await RequestApiPostWithToken(url_add1,param, token_)
+    try {
+       refreshtList()
+    } catch (error) {
+      custom_toast("gagal menambahkan keranjang")
+    }
+    setLoading(false);
+  }
+
+  const deleteChart = async (idChart) =>{
+      setLoading(true);
+      const url_add1 = `${url.end_point_dev}${url.delete_chart}`;
+      const param = {id_keranjang_kasir : idChart }
+      const send_api = await RequestApiPostWithToken(url_add1,param, token_)
+      try {
+        refreshtList()
+      } catch (error) {
+        custom_toast("gagal hapus keranjang")
+      }
+      setLoading(false);
+  }
+
   function checkState () {
     // setLoading(false)
     console.log('cek state, loding', isLoading);
@@ -79,6 +120,7 @@ export default function ListKeranjang() {
   }
 
   const itemRednerList = ({item, index}) =>{
+    const id_chart = item.id_keranjang_kasir;
     return(
       <View style={{height:150,left:10,top:10}}>
         <View
@@ -92,13 +134,19 @@ export default function ListKeranjang() {
         <Text>Jumlah : {item.jumlah_item_dibeli}</Text>
         <Text>Total harga item : {item.total_harga_item}</Text>
         <View style={{flex:1,flexDirection:'row'}}>
-          <TouchableOpacity style={{backgroundColor:'blue',width:40,height:40,top:8, borderRadius:8}}>
-            <Text style={{textAlign:'center', textAlignVertical: 'center'}}>+</Text>
+          <TouchableOpacity 
+            onPress={(e)=>addChartPlus1(id_chart)}
+            style={{backgroundColor:'blue',width:40,height:40,top:8, borderRadius:8}}>
+            <Text style={{textAlign:'center',top:6,fontSize:18}}>+</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={{backgroundColor:'blue',width:40,height:40,top:8,left:10, borderRadius:8}}>
-            <Text style={{textAlign:'center',alignItems: 'center'}}>-</Text>
+          <TouchableOpacity 
+            onPress={(e)=>removeChartMin1(id_chart)}
+            style={{backgroundColor:'blue',width:40,height:40,top:8,left:10, borderRadius:8}}>
+            <Text style={{textAlign:'center',fontSize:30}}>-</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={{width:40,height:40,top:8,left:20, borderRadius:8}}>
+          <TouchableOpacity 
+            onPress={(e)=>deleteChart(id_chart)}
+            style={{width:40,height:40,top:8,left:20, borderRadius:8}}>
                       <Image 
                         source={require('../img/trash.png')} 
                         resizeMode="contain"
