@@ -65,7 +65,7 @@ export default function ListPage() {
         global_state.setProduct({id_trans : '22'});
         setCode('22');
 
-        /** real api (bisa) */
+        /** real api (bisa) tess */
         // const result_api = await RequestApiPostGenerate(url_generate,token_);
         // try {
         //     const id_trans = result_api.data.data.id_struck.toString();
