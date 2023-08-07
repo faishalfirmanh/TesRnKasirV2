@@ -10,11 +10,13 @@ import { RequestApiPostWithToken } from './../endpoint/RequestApi';
 import { custom_toast } from './../component/ToastCustom';
 import { convert_number_coma } from './../component/HelperFunction';
 
-export default function ListKeranjang() {
+export default function ListKeranjang({navigation}) {
   const [isLoading, setLoading] = useState(true);
   const [productKeranjang, setProductKeranjang] = useState({})
   const [rincianProd, setRincianProd] = useState([]);
   const [label_price, setLabelPrice] = useState(0);
+  const [price_bayar, setPriceBayar ] = useState(0);
+  const [kembalian, setPriceKembalian] = useState(0);
   const global_state = useContext(AppContext);
   const token_ =  global_state.userLogin.data_api.jwt_token;
 
@@ -31,9 +33,10 @@ export default function ListKeranjang() {
     if (val > 0) {
       const convert_val = convert_number_coma(val);
       setLabelPrice(convert_val)
+      setPriceBayar(val)
     }else{
       setLabelPrice(0)
-      console.log(val);
+      setPriceBayar(0)
     }
     console.log('vall',val);
     
@@ -65,7 +68,7 @@ export default function ListKeranjang() {
        const rincian_ = [ data_all.total_harga, data_all.dibayar, data_all.kembalian ]
        setProductKeranjang(list_item)
        setRincianProd(rincian_)
-       console.log(list_item);
+       
     } catch (error) {
        setProductKeranjang({})
     }
@@ -119,6 +122,30 @@ export default function ListKeranjang() {
    
   }
 
+  const reqApiInputUserBeli = async () =>{
+    setLoading(true);
+    const url_bayar = `${url.end_point_dev}${url.price_user_bayar}`
+    const param = { id_struck : global_state.product.id_trans, user_bayar : price_bayar }
+    try {
+      const send_api = await RequestApiPostWithToken(url_bayar, param, token_);
+      const res_success = send_api.data.data;
+      const bayar_res = res_success.pembeli_bayar;
+      const kembalian_res = res_success.kembalian;
+      setPriceKembalian(kembalian_res);
+      setPriceBayar(bayar_res)
+      navigation.navigate('listPrint')
+    } catch (error) {
+       if (error.response.data.data.user_bayar) {
+         custom_toast(`Pembeli harus bayar lebih dari sama dengan ${rincianProd[0]}`)
+       }
+    } finally {
+      console.log('finally');
+    }
+    setLoading(false);
+    
+
+  }
+
   const itemRednerList = ({item, index}) =>{
     const id_chart = item.id_keranjang_kasir;
     return(
@@ -163,7 +190,7 @@ export default function ListKeranjang() {
   }
 
   return (
-    <View>
+    <View style={{backgroundColor:'white'}}>
       <Text style={{color:'black'}}>ListKeranjang</Text>
       <Text style={{color:'black'}}>No Transaksi {global_state.product.id_trans}</Text>
       <TouchableOpacity 
@@ -182,7 +209,10 @@ export default function ListKeranjang() {
         style={css_global.textInputStyle}>
 
       </TextInput>
-      <TouchableOpacity style={css_global.buttonStyle}>
+      <TouchableOpacity 
+          disabled={price_bayar > 0 ? false : true}
+          onPress={()=> reqApiInputUserBeli()}
+          style={css_global.buttonStyle}>
          <Text style={css_global.textStyleButton}>Hitung</Text>
       </TouchableOpacity>
     
@@ -201,7 +231,7 @@ export default function ListKeranjang() {
                       renderItem={itemRednerList}
                       keyExtractor={item => `${item.id_keranjang_kasir}`}
                     />
-                    <Text style={{color:'black',top:25}}>Total : {rincianProd[0]}</Text>
+                    <Text style={{color:'black',top:25}}>Total : {rincianProd[0]} | bayar {convert_number_coma(price_bayar)}</Text>
                  </View>
 
               )}

@@ -81,6 +81,7 @@ const App: () => Node = () => {
           <Stack.Screen name="login" component={Login} options={{headerShown: false}}/>
           {/* <Stack.Screen name="home" component={Home} /> */}
           <Stack.Screen name="listtabhome" component={NavigatorCustom} />
+          <Stack.Screen name="listPrint" component={ListPrint}/>
         </Stack.Navigator>
       </NavigationContainer>
     </AppContext.Provider>
