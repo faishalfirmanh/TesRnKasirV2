@@ -137,6 +137,8 @@ export default function ListKeranjang({navigation}) {
     } catch (error) {
        if (error.response.data.data.user_bayar) {
          custom_toast(`Pembeli harus bayar lebih dari sama dengan ${rincianProd[0]}`)
+         setPriceBayar(0)
+         setPriceKembalian(0);
        }
     } finally {
       console.log('finally');
@@ -157,9 +159,9 @@ export default function ListKeranjang({navigation}) {
           }}
         />
         <Text>Name: {item.nama_product}</Text>
-        <Text>Harga tiap item: {item.harga_tiap_item} </Text>
+        <Text>Harga tiap item: {convert_number_coma(item.harga_tiap_item)} </Text>
         <Text>Jumlah : {item.jumlah_item_dibeli}</Text>
-        <Text>Total harga item : {item.total_harga_item}</Text>
+        <Text>Total harga item : {convert_number_coma(item.total_harga_item)}</Text>
         <View style={{flex:1,flexDirection:'row'}}>
           <TouchableOpacity 
             onPress={(e)=>addChartPlus1(id_chart)}

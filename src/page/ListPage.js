@@ -62,19 +62,19 @@ export default function ListPage() {
         const url_generate = `${url.end_point_dev}${url.generate}`
 
         /** testing */
-        global_state.setProduct({id_trans : '22'});
-        setCode('22');
+        // global_state.setProduct({id_trans : '22'});
+        // setCode('22');
 
         /** real api (bisa) tess */
-        // const result_api = await RequestApiPostGenerate(url_generate,token_);
-        // try {
-        //     const id_trans = result_api.data.data.id_struck.toString();
-        //     global_state.setProduct({id_trans : id_trans});
-        //     setCode(id_trans);
-        // } catch (error) {
-        //    console.log('error generate',error);   
-        //    global_state.setProduct({id_trans : null});
-        // }
+        const result_api = await RequestApiPostGenerate(url_generate,token_);
+        try {
+            const id_trans = result_api.data.data.id_struck.toString();
+            global_state.setProduct({id_trans : id_trans});
+            setCode(id_trans);
+        } catch (error) {
+           console.log('error generate',error);   
+           global_state.setProduct({id_trans : null});
+        }
 
         
         
