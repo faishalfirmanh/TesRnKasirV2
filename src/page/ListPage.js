@@ -62,19 +62,19 @@ export default function ListPage() {
         const url_generate = `${url.end_point_dev}${url.generate}`
 
         /** testing */
-        // global_state.setProduct({id_trans : '22'});
-        // setCode('22');
+        global_state.setProduct({id_trans : '27'});
+        setCode('27');
 
         /** real api (bisa) tess */
-        const result_api = await RequestApiPostGenerate(url_generate,token_);
-        try {
-            const id_trans = result_api.data.data.id_struck.toString();
-            global_state.setProduct({id_trans : id_trans});
-            setCode(id_trans);
-        } catch (error) {
-           console.log('error generate',error);   
-           global_state.setProduct({id_trans : null});
-        }
+        // const result_api = await RequestApiPostGenerate(url_generate,token_);
+        // try {
+        //     const id_trans = result_api.data.data.id_struck.toString();
+        //     global_state.setProduct({id_trans : id_trans});
+        //     setCode(id_trans);
+        // } catch (error) {
+        //    console.log('error generate',error);   
+        //    global_state.setProduct({id_trans : null});
+        // }
 
         
         
@@ -159,15 +159,35 @@ export default function ListPage() {
             product_jual_id : id_product,
             jumlah_item_dibeli: 1
         }
-        const res_api = await RequestApiPostWithToken(url_ad,param_add,token_)
-        try {
-            const sukses_keranjang = res_api.data
+        // const res_api = await RequestApiPostWithToken(url_ad,param_add,token_)
+        // try {
+        //     const sukses_keranjang = res_api.data
+        //     custom_toast("sukses menambahkan ke keranjang");
+        //     console.log('sukses keranjnag');
+        //     console.log(sukses_keranjang);
+        // } catch (error) {
+        //     console.log('error add keranjang');
+        // }
+        const headers_config = { headers: {"Authorization" : `Bearer ${token_}`}};
+        axios.post(url_ad, param_add, headers_config)
+        .then(function (response) {
+            const sukses_keranjang = response.data
             custom_toast("sukses menambahkan ke keranjang");
-            console.log('sukses keranjnag');
-            console.log(sukses_keranjang);
-        } catch (error) {
-            console.log('error add keranjang');
-        }
+            console.log('suk',response);
+        })
+        .catch(function (error,param2) {
+            if (error.response.data.data) {
+                if (error.response.data.data.struck_id[0]) { //select id invalid
+                    //console.log('error id',error.response.data.data.struck_id[0]);
+                    custom_toast(error.response.data.data.struck_id[0])
+                }
+                else if(error.response.data.data[0].data.id_keranjang_kasir) { 
+                    //1 transaksi hanya 1 variant
+                    const err = error.response.data.data[0].data.id_keranjang_kasir
+                    custom_toast(err)
+                } 
+            }
+        });
     }
 
 

@@ -3,6 +3,8 @@ import React,{useState, useEffect,useContext} from 'react'
 import { RequestApiPostWithToken } from './../endpoint/RequestApi';
 import { custom_toast } from './../component/ToastCustom';
 import { convert_number_coma } from './../component/HelperFunction';
+import { BluetoothEscposPrinter } from 'react-native-bluetooth-escpos-printer';
+
 import { AppContext } from './../context/AppContext';
 import url from './../endpoint/Endpoint';
 import { css_global } from './../style/StyleGlobal';
@@ -35,9 +37,62 @@ export default function ListPrint() {
   }
 
 
-  const btnPrint = () =>{
-    console.log(listProd);
+  const btnPrint = async ()=>{
+    // console.log(listProd);
     console.log('Print');
+   
+    let columnWidths = [20, 28];
+    await BluetoothEscposPrinter.printerUnderLine(1);
+    await BluetoothEscposPrinter.printText(
+      '================================',
+      {},
+    );
+    listProd.map((item,key)=>{
+      const name_prd = item.nama_product;
+      const jumlah_item = `${item.jumlah_item_dibeli} x ${convert_number_coma(item.harga_tiap_item)} = ${convert_number_coma(item.total_harga_item)}`
+
+       BluetoothEscposPrinter.printText(`${name_prd} || ${jumlah_item} \n`, {
+        encoding: 'GBK',
+        codepage: 0,
+        widthtimes: 0,
+        heigthtimes: 0,
+        fonttype: 1,
+      });
+
+    })
+    await BluetoothEscposPrinter.printText(
+      '================================ \n',
+      {},
+    );
+    await BluetoothEscposPrinter.printText(`Total belanjan  :  ${priceTotal} \n \n`, {
+      encoding: 'GBK',
+      codepage: 0,
+      widthtimes: 0,
+      heigthtimes: 0,
+      fonttype: 1,
+    })
+    await BluetoothEscposPrinter.printText(`Bayar  :  ${priceBayar} \n \n`, {
+      encoding: 'GBK',
+      codepage: 0,
+      widthtimes: 0,
+      heigthtimes: 0,
+      fonttype: 1,
+    })
+    await BluetoothEscposPrinter.printText(`Kembalian  :  ${priceKembalian} \n \n`, {
+      encoding: 'GBK',
+      codepage: 0,
+      widthtimes: 0,
+      heigthtimes: 0,
+      fonttype: 1,
+    })
+    await BluetoothEscposPrinter.printText(
+      '-------------------------------- \n',
+      {},
+    );
+    await BluetoothEscposPrinter.printerUnderLine(0);
+    await BluetoothEscposPrinter.printText('\r\n', {});
+   
+    
   }
 
   const itemRenderProduct = ({item, index}) =>{
@@ -49,8 +104,8 @@ export default function ListPrint() {
               borderBottomWidth:3,
             }}
           />
-          <Text>{item.nama_product}</Text>
-          <Text>{item.jumlah_item_dibeli} x {convert_number_coma(item.harga_tiap_item)} = {convert_number_coma(item.total_harga_item)}</Text>
+          <Text style={{color:'black'}}>{item.nama_product}</Text>
+          <Text style={{color:'black'}}>{item.jumlah_item_dibeli} x {convert_number_coma(item.harga_tiap_item)} = {convert_number_coma(item.total_harga_item)}</Text>
       </View>
     )
   }
@@ -82,9 +137,9 @@ export default function ListPrint() {
             }
             {
               isLoading ? <ActivityIndicator/> :
-              <View style={{backgroundColor:'green',left:20,marginTop:0,borderRadius:8,height:60}}>
-                <Text style={{color:'white',left:10}}>Total : {priceTotal} | bayar {convert_number_coma(priceBayar)}</Text>
-                <Text style={{color:'white',left:10}}>Kembalian : {priceKembalian}</Text>
+              <View style={{backgroundColor:'white',left:20,marginTop:0,borderRadius:8,height:60}}>
+                <Text style={{color:'black',left:10}}>Total : {priceTotal} | bayar {convert_number_coma(priceBayar)}</Text>
+                <Text style={{color:'black',left:10}}>Kembalian : {priceKembalian}</Text>
               </View>
             }
       </View>
@@ -100,7 +155,7 @@ const style =  StyleSheet.create({
   },
   viewList:{
     height:380,
-    backgroundColor:'green',
+    backgroundColor:'white',
     alignContent:'center',
     borderRadius:6,
     left:20
