@@ -8,6 +8,7 @@ import ListKeranjang from './../page/ListKeranjang';
 import ListPrint from './../page/ListPrint';
 import { css_global } from './../style/StyleGlobal';
 import BlueTootPage from './../page/BlueTootPage';
+import Acount from './../page/Acount';
 
 const bottomTap =  createBottomTabNavigator();
 export default function NavigatorCustom() {
@@ -97,6 +98,24 @@ export default function NavigatorCustom() {
                     </View>
                 )
                 }}/>
+            <bottomTap.Screen name="akun" component={Acount} options={{
+            headerShown: false,
+            tabBarIcon:({focused})=>(
+                <View>
+                    <Image 
+                    source={require('../img/acount.png')} 
+                    resizeMode="contain"
+                    style={{
+                        width:25,
+                        height:25,
+                        tintColor: focused ? 'red' : 'black'
+                    }}
+                    />
+                    <Text style={{...focused ? css_global.textTapOn : css_global.textTapOff
+                    }}>Akun</Text>
+                </View>
+            )
+            }}/>
         </bottomTap.Navigator>
       )
 }

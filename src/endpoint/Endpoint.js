@@ -2,6 +2,8 @@ export default url = {
     end_point_dev : 'http://devkasir.cobaktesbrow.com/api/',
     
     url_login :'login',
+    logout: 'logout-api',
+    
     generate:'kasir/generate-new-struck',
     url_search_product : 'product/product-list-jual-price-search',
     url_get_strukc_id : 'get-struck-id',

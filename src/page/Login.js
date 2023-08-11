@@ -55,7 +55,7 @@ export default function Login({navigation}) {
           const data_api = result_api.data;
           if (result_api.status == 200) {
             contexst.setUserLogin({data_api});
-            navigation.navigate('listtabhome')
+            navigation.navigate('menu')
           }
           console.log('sukses login');
         } catch (error) {
