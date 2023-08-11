@@ -2,7 +2,7 @@ import { View, Text,FlatList, TouchableOpacity, ActivityIndicator, StyleSheet } 
 import React,{useState, useEffect,useContext} from 'react'
 import { RequestApiPostWithToken } from './../endpoint/RequestApi';
 import { custom_toast } from './../component/ToastCustom';
-import { convert_number_coma } from './../component/HelperFunction';
+import { convert_number_coma, date_now_wib } from './../component/HelperFunction';
 import { BluetoothEscposPrinter } from 'react-native-bluetooth-escpos-printer';
 
 import { AppContext } from './../context/AppContext';
@@ -17,6 +17,12 @@ export default function ListPrint() {
   const [priceBayar, setPriceBayar] = useState(0);
   const [priceKembalian, setPriceKembalian] = useState(0);
   const [priceTotal, setTotal] = useState(0);
+  const [dateStruck, setDate] = useState({})
+
+  useEffect(() => {
+    reqViewStruck()
+  }, [])
+  
 
   const reqViewStruck = async ()=>{
       setLoading(true)
@@ -29,6 +35,7 @@ export default function ListPrint() {
           setPriceBayar(data_res.dibayar)
           setPriceKembalian(data_res.kembalian)
           setTotal(data_res.total_harga)
+          setDate(data_res.tanggal)
           console.log('sukses req struck', data_res);
       } catch (error) {
         console.log('error get', error);
@@ -43,6 +50,13 @@ export default function ListPrint() {
    
     let columnWidths = [20, 28];
     await BluetoothEscposPrinter.printerUnderLine(1);
+    await BluetoothEscposPrinter.printText(`${dateStruck} \n`,{
+      encoding: 'GBK',
+      codepage: 0,
+      widthtimes: 0,
+      heigthtimes: 0,
+      fonttype: 1,
+    })
     await BluetoothEscposPrinter.printText(
       '================================',
       {},
@@ -51,7 +65,7 @@ export default function ListPrint() {
       const name_prd = item.nama_product;
       const jumlah_item = `${item.jumlah_item_dibeli} x ${convert_number_coma(item.harga_tiap_item)} = ${convert_number_coma(item.total_harga_item)}`
 
-       BluetoothEscposPrinter.printText(`${name_prd} || ${jumlah_item} \n`, {
+       BluetoothEscposPrinter.printText(`${name_prd} \n ${jumlah_item} \n`, {
         encoding: 'GBK',
         codepage: 0,
         widthtimes: 0,

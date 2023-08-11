@@ -21,11 +21,8 @@ export default function ListKeranjang({navigation}) {
   const token_ =  global_state.userLogin.data_api.jwt_token;
 
   useEffect(() => {
-    console.log('KERANJANG page', global_state.product);
-  
-    return () => {
-      
-    }
+    refreshtList()
+    console.log('use effect did mount');
   }, [])
   
 
@@ -254,6 +251,7 @@ const style =  StyleSheet.create({
     backgroundColor:'green',
     alignContent:'center',
     borderRadius:6,
-    left:20
+    left:20,
+    width:350
   }
 })
