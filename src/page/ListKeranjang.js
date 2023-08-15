@@ -62,12 +62,20 @@ export default function ListKeranjang({navigation}) {
     try {
        const data_all = send_api.data.data[0].data;
        const list_item = data_all.list
-       const rincian_ = [ data_all.total_harga, data_all.dibayar, data_all.kembalian ]
-       setProductKeranjang(list_item)
-       setRincianProd(rincian_)
+       if (list_item.length > 0) {
+          const rincian_ = [ data_all.total_harga, data_all.dibayar, data_all.kembalian ]
+          setProductKeranjang(list_item)
+          setRincianProd(rincian_)
+       }else{
+        setProductKeranjang(0)
+        setRincianProd(0)
+       }
+       console.log('sukk',send_api);
+       
        
     } catch (error) {
        setProductKeranjang({})
+       console.log('err dat',error);
     }
     setLoading(false);
    

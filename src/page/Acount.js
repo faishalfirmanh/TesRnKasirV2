@@ -6,6 +6,7 @@ import axios from 'axios';
 import url from './../endpoint/Endpoint';
 import { custom_toast } from './../component/ToastCustom';
 import { ReqApiAxios, RequestApiPostGenerate } from './../endpoint/RequestApi';
+import ButtonCustom from '../component/ButtonCustom';
 
 export default function Acount({navigation}) {
     const global_state = useContext(AppContext);
@@ -32,11 +33,11 @@ export default function Acount({navigation}) {
 
   return (
     <View style={{ flex: 1,justifyContent: 'center', alignItems: 'center'}}>
-       <TouchableOpacity 
-        onPress={()=>logout()}
-        style={css_global.buttonStyle}>
-            <Text style={css_global.textStyleButton}>Logout</Text>
-       </TouchableOpacity>
+       <ButtonCustom
+        text={"Logout"} 
+        isSuccess={false} 
+        btnOnSubmitProps={() => logout()}
+       />
     </View>
   )
 }

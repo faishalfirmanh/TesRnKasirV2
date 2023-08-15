@@ -16,6 +16,7 @@ import axios from 'axios';
 import url from './../endpoint/Endpoint';
 import { RequestApiPostWithToken,RequestApiPostGenerate } from './../endpoint/RequestApi';
 import { custom_toast } from './../component/ToastCustom';
+import ButtonCustom from '../component/ButtonCustom';
 
 export default function ListPage() {
 
@@ -60,23 +61,34 @@ export default function ListPage() {
     const generateNewStruck = async () =>{
         const toko_id = global_state.userLogin.data_api.toko.id_toko
         const url_generate = `${url.end_point_dev}${url.generate}`
-
+        const headers_config = { headers: {"Authorization" : `Bearer ${token_}`}};
         /** testing */
         // global_state.setProduct({id_trans : '27'});
         // setCode('27');
 
         /** real api (bisa) tess */
-        const result_api = await RequestApiPostGenerate(url_generate,token_);
-        try {
-            const id_trans = result_api.data.data.id_struck.toString();
+        // const result_api = await RequestApiPostGenerate(url_generate,token_);
+        // try {
+            // const id_trans = result_api.data.data.id_struck.toString();
+            // global_state.setProduct({id_trans : id_trans});
+            // setCode(id_trans);
+        // } catch (error) {
+        //    console.log('error generate',error);   
+        //    global_state.setProduct({id_trans : null});
+        // }
+
+        axios.post(url_generate,{},headers_config)
+        .then(function (res_success_api) {
+            const id_trans = res_success_api.data.data.id_struck.toString();
             global_state.setProduct({id_trans : id_trans});
             setCode(id_trans);
-        } catch (error) {
-           console.log('error generate',error);   
-           global_state.setProduct({id_trans : null});
-        }
-
-        
+        })
+        .catch(function (error,param2) {
+           if (error.response.data) {
+              custom_toast(error.response.data.msg)
+              global_state.setProduct({id_trans : null});
+           }
+        });
         
     }
 
@@ -117,7 +129,7 @@ export default function ListPage() {
                     }
                 } catch (error) {
                     setProduct(0)
-                    console.log('error',error);
+                    custom_toast(error.response.data.msg)
                 }
                 setLoading(false);
             }else{
@@ -217,12 +229,18 @@ export default function ListPage() {
         <Text style={{color:'black'}}>ListPage</Text>
         <Text style={css_global.textStyle}>1. Generate Kode transaksi</Text>
         <TextInput style={css_global.textInputStyle} value={code} editable={false}></TextInput>
-        <TouchableOpacity 
+        {/* <TouchableOpacity 
             onPress={()=>generateNewStruck()}
             style={css_global.buttonStyle}
             disabled={false}>
             <Text style={css_global.textStyleButton}>Generate</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
+        <ButtonCustom 
+            mLeft={10}
+            widthCusBtn={130}
+            text={"Generate"} 
+            isSuccess={true} 
+            btnOnSubmitProps={() => generateNewStruck()} />
 
         <Text style={css_global.textStyle}>2. Masukkan nama product</Text>
         <TextInput 

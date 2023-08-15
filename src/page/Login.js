@@ -1,9 +1,11 @@
-import { View, Text, Button, StyleSheet, TextInput, ToastAndroid } from 'react-native'
+import { View, Text, Button, StyleSheet, TextInput, ToastAndroid, Dimensions } from 'react-native'
 import React,{useContext, useState} from 'react'
 import { AppContext } from './../context/AppContext';
 import axios from 'axios';
 
 import url from './../endpoint/Endpoint';
+import { width_device } from '../style/StyleGlobal';
+import ButtonCustom from '../component/ButtonCustom';
 
 export default function Login({navigation}) {
 
@@ -70,9 +72,8 @@ export default function Login({navigation}) {
     }
 
   return (
-    <View>
-      <Text style={{color:'black'}}>Login</Text>
-      <Text style={{color:'black'}}>{contexst.user.name}</Text>
+    <View style={{ flex: 1,justifyContent: 'center', alignItems: 'center'}}>
+      
       <TextInput
         style={styles.input}
         placeholder="input email"
@@ -83,19 +84,22 @@ export default function Login({navigation}) {
         placeholder="input password"
         onChangeText={(input)=>setPass({pass:input})}
       />
-      <Button
+      {/* <Button
         title="login"
         onPress={() => submitToHomePage()}
-      />
+      /> */}
       {/* <Button title="Set state" onPress ={()=>contexst.setUser({name:'ini state'})}/> */}
-      <Text style={{color:'black'}}>rewre</Text>
+      <ButtonCustom text={"Login"} isSuccess={true} btnOnSubmitProps={() => submitToHomePage()}/>
+      
     </View>
   )
 }
 
+
 const styles = StyleSheet.create({
   input: {
-    height: 40,
+    height: 50,
+    width: (75 / 100) * width_device , 
     margin: 12,
     borderWidth: 1,
     padding: 10,

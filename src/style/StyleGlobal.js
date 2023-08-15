@@ -1,6 +1,8 @@
 
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native';
 
+export const width_device = Dimensions.get('window').width;
+export const height_device = Dimensions.get('window').height;
 
 export const css_global = StyleSheet.create({
     textInputStyle:{
