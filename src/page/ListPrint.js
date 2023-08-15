@@ -8,6 +8,8 @@ import { BluetoothEscposPrinter } from 'react-native-bluetooth-escpos-printer';
 import { AppContext } from './../context/AppContext';
 import url from './../endpoint/Endpoint';
 import { css_global } from './../style/StyleGlobal';
+import ComponentLoading from '../component/ComponentLoading';
+import ButtonCustom from '../component/ButtonCustom';
 
 export default function ListPrint() {
   const global_state = useContext(AppContext);
@@ -127,20 +129,31 @@ export default function ListPrint() {
   return (
     <View>
       <Text style={{color:'black',marginLeft:12,top:10}}>No Transaksi : {`${global_state.product.id_trans}`}</Text>
-      <TouchableOpacity 
-        style={{...css_global.buttonStyle, marginTop:20}}
-        onPress={()=> reqViewStruck()}>
-        <Text style={css_global.textStyleButton}>refresh</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-         onPress={()=>btnPrint()}
-         style={css_global.buttonStyle}
-        >
-        <Text style={css_global.textStyleButton}>Print</Text>
-      </TouchableOpacity>
+
+      <ButtonCustom
+         mLeft={12}
+         mTop={19}
+         f_size={13}
+         widthCusBtn={80}
+         heightBtnPercentDevice={5}
+         text={"Refresh"} 
+         isSuccess={true} 
+         btnOnSubmitProps={() => reqViewStruck()}
+      />
+    
+      <ButtonCustom
+         mLeft={12}
+         mTop={10}
+         f_size={16}
+         widthCusBtn={75}
+         heightBtnPercentDevice={6}
+         text={"Print"} 
+         isSuccess={true} 
+         btnOnSubmitProps={() => btnPrint()}
+      />
       <View style={style.wrapList}>
             {isLoading ? 
-              <ActivityIndicator/> :  
+              <ComponentLoading/> :  
               <View style={style.viewList}>
                 <FlatList
                   data={listProd}

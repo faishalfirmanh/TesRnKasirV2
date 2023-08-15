@@ -6,17 +6,19 @@ import { View,
     ActivityIndicator,
     ScrollView,
     TextInput,
-    ToastAndroid
+    ToastAndroid,
+    Image
  } from 'react-native'
 import React, {useState, useEffect,useContext} from 'react'
 import InputSearch from './../component/InputSearch';
-import { css_global } from './../style/StyleGlobal';
+import { css_global, height_device, width_device } from './../style/StyleGlobal';
 import { AppContext } from './../context/AppContext';
 import axios from 'axios';
 import url from './../endpoint/Endpoint';
 import { RequestApiPostWithToken,RequestApiPostGenerate } from './../endpoint/RequestApi';
 import { custom_toast } from './../component/ToastCustom';
 import ButtonCustom from '../component/ButtonCustom';
+import ComponentLoading from '../component/ComponentLoading';
 
 export default function ListPage() {
 
@@ -215,19 +217,18 @@ export default function ListPage() {
                     {
                     marginTop: 8,
                     marginLeft:12,
-                    height:40,
+                    height:(6 / 100) * height_device,
                     backgroundColor:'#BCC6CC',
                 }}
             >
-               <Text style={{color:'black',left:14,top: 5, alignContent: 'center'}}>{item.nama_product}</Text> 
+               <Text style={{color:'black',left:14,top: 5}}>{item.nama_product}</Text> 
             </TouchableOpacity>
         )
     }
   return (
     <View style={{flex:1}}>
         
-        <Text style={{color:'black'}}>ListPage</Text>
-        <Text style={css_global.textStyle}>1. Generate Kode transaksi</Text>
+        <Text style={{...css_global.textStyle,marginTop:10}}>1. Generate Kode transaksi</Text>
         <TextInput style={css_global.textInputStyle} value={code} editable={false}></TextInput>
         {/* <TouchableOpacity 
             onPress={()=>generateNewStruck()}
@@ -236,13 +237,16 @@ export default function ListPage() {
             <Text style={css_global.textStyleButton}>Generate</Text>
         </TouchableOpacity> */}
         <ButtonCustom 
-            mLeft={10}
-            widthCusBtn={130}
+            mLeft={12}
+            mTop={5}
+            f_size={13}
+            widthCusBtn={90}
+            heightBtnPercentDevice={5}
             text={"Generate"} 
             isSuccess={true} 
             btnOnSubmitProps={() => generateNewStruck()} />
 
-        <Text style={css_global.textStyle}>2. Masukkan nama product</Text>
+        <Text style={{...css_global.textStyle,marginTop:10}}>2. Masukkan nama product</Text>
         <TextInput 
             onChangeText={(e)=>sugestProductList(e)}
             editable={code == '' ? false : true}
@@ -250,10 +254,20 @@ export default function ListPage() {
         </TextInput>
 
         <View style={style.wrapList}>
-            {isLoading ? <ActivityIndicator/> : (
+            {isLoading ? <ComponentLoading/> : (
                 product.length < 1 ? (
-                    <View>
-                        <Text style={{backgroundColor:'yellow',color:'black',marginLeft:12}}>Tidal ada</Text>
+                    <View style={{marginTop:-14}}>
+                         <Text style={style.text_not_found}>Data tidal ada...!!!</Text>
+                         <Image 
+                                source={require('../img/empty.png')} 
+                                resizeMode="contain"
+                                style={{
+                                    marginLeft:(30 /100) * width_device,
+                                    marginRight:(30 /100) * width_device,
+                                    width:105,
+                                    height:105,
+                                }}
+                          />
                     </View>
                 ) :
                 <FlatList
@@ -274,6 +288,15 @@ const style =  StyleSheet.create({
         marginTop:16,
         marginBottom:100,
         height:350,
-        width:'80%'
+        width:'90%'
+    },
+    text_not_found :{
+        marginTop:10,
+        fontWeight:'500',
+        marginBottom:10,
+        fontSize:18,
+        color:'red',  
+        marginLeft:(25 /100) * width_device,
+        marginRight:(20 /100) * width_device,
     }
 })

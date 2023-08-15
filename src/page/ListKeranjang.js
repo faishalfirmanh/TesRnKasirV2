@@ -1,6 +1,5 @@
 import { View, Text, StyleSheet, TouchableOpacity, FlatList, 
   TextInput,
-  ActivityIndicator,
   Image } from 'react-native'
 import React, {useState, useEffect,useContext} from 'react'
 import { AppContext } from './../context/AppContext';
@@ -9,6 +8,8 @@ import url from './../endpoint/Endpoint';
 import { RequestApiPostWithToken } from './../endpoint/RequestApi';
 import { custom_toast } from './../component/ToastCustom';
 import { convert_number_coma } from './../component/HelperFunction';
+import ComponentLoading from '../component/ComponentLoading';
+import ButtonCustom from '../component/ButtonCustom';
 
 export default function ListKeranjang({navigation}) {
   const [isLoading, setLoading] = useState(true);
@@ -198,13 +199,22 @@ export default function ListKeranjang({navigation}) {
 
   return (
     <View style={{backgroundColor:'white'}}>
-      <Text style={{color:'black'}}>ListKeranjang</Text>
-      <Text style={{color:'black'}}>No Transaksi {global_state.product.id_trans}</Text>
-      <TouchableOpacity 
+      <Text style={{color:'black',marginLeft:12,marginBottom:15}}>No Transaksi {global_state.product.id_trans}</Text>
+      {/* <TouchableOpacity 
        onPress={()=> refreshtList()}
        style={css_global.buttonStyle}>
         <Text style={css_global.textStyleButton}>Refresh</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
+      <ButtonCustom
+         mLeft={12}
+         mTop={5}
+         f_size={13}
+         widthCusBtn={80}
+         heightBtnPercentDevice={5}
+         text={"Refresh"} 
+         isSuccess={true} 
+         btnOnSubmitProps={() => refreshtList()}
+      />
       
       <Text style={css_global.textStyle}>Masukkan uang pembeli</Text>
       <Text style={{backgroundColor:'white', top:5,left:12,textAlign:'left',color:'black'}}>
@@ -216,17 +226,22 @@ export default function ListKeranjang({navigation}) {
         style={css_global.textInputStyle}>
 
       </TextInput>
-      <TouchableOpacity 
-          disabled={price_bayar > 0 ? false : true}
-          onPress={()=> reqApiInputUserBeli()}
-          style={css_global.buttonStyle}>
-         <Text style={css_global.textStyleButton}>Hitung</Text>
-      </TouchableOpacity>
+
+      <ButtonCustom
+         mLeft={12}
+         mTop={5}
+         f_size={14}
+         widthCusBtn={75}
+         heightBtnPercentDevice={6}
+         text={"Hitung"} 
+         isSuccess={true} 
+         btnOnSubmitProps={() => reqApiInputUserBeli()}
+      />
     
 
       <View style={style.wrapList}>
             {isLoading ? 
-              <ActivityIndicator/> : 
+              <ComponentLoading/> : 
               (
                 productKeranjang.length < 1 ? 
                  (

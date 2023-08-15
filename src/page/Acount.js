@@ -11,7 +11,7 @@ import ButtonCustom from '../component/ButtonCustom';
 export default function Acount({navigation}) {
     const global_state = useContext(AppContext);
     const token_ =  global_state.userLogin.data_api.jwt_token;
-
+    const [isLoading, setLoading] = useState(true);
     
 
   const logout = async () =>{

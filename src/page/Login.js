@@ -1,4 +1,4 @@
-import { View, Text, Button, StyleSheet, TextInput, ToastAndroid, Dimensions } from 'react-native'
+import { View, Text, Button, StyleSheet, TextInput, ToastAndroid, Dimensions, TouchableOpacity, Image } from 'react-native'
 import React,{useContext, useState} from 'react'
 import { AppContext } from './../context/AppContext';
 import axios from 'axios';
@@ -11,6 +11,7 @@ export default function Login({navigation}) {
 
   const [email, setEmail] = useState({});
   const [pass, setPass] = useState('');
+  const [securePass, setSecurePass] = useState(true);
     const contexst = useContext(AppContext)
     console.log('tess-',contexst.user.name);
 
@@ -71,25 +72,50 @@ export default function Login({navigation}) {
        
     }
 
+    const showHidePass = ()=>{
+        if(securePass){
+          setSecurePass(false);
+        }else{
+          setSecurePass(true);
+        }
+    }
+
   return (
     <View style={{ flex: 1,justifyContent: 'center', alignItems: 'center'}}>
       
       <TextInput
         style={styles.input}
-        placeholder="input email"
+        placeholderTextColor="#B6BEAE" 
+        placeholder="input email...."
         onChangeText={(input)=>setEmail({email:input})}
       />
-      <TextInput
-        style={styles.input}
-        placeholder="input password"
-        onChangeText={(input)=>setPass({pass:input})}
-      />
+    
+      <View style={styles.btn_eye}>
+          <TouchableOpacity onPress={()=> showHidePass()}>
+              <Image 
+                  source={securePass ? require('../img/hide.png') : require('../img/show.png')} 
+                  resizeMode="contain"
+                  style={{
+                      marginLeft:8,
+                      width:25,
+                      height:25,
+                  }}
+              />
+          </TouchableOpacity>
+          <TextInput
+            style={{height: 50, width: (65 / 100) * width_device,color:'black'}}
+            placeholderTextColor="#B6BEAE" 
+            placeholder="input password...."
+            secureTextEntry={securePass}
+            onChangeText={(input)=>setPass({pass:input})}
+          />
+      </View>
       {/* <Button
         title="login"
         onPress={() => submitToHomePage()}
       /> */}
       {/* <Button title="Set state" onPress ={()=>contexst.setUser({name:'ini state'})}/> */}
-      <ButtonCustom text={"Login"} isSuccess={true} btnOnSubmitProps={() => submitToHomePage()}/>
+      <ButtonCustom mTop={20} text={"Login"} isSuccess={true} btnOnSubmitProps={() => submitToHomePage()}/>
       
     </View>
   )
@@ -105,4 +131,13 @@ const styles = StyleSheet.create({
     padding: 10,
     color:'black'
   },
+
+  btn_eye:{
+    marginTop:25,
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderColor: 'gray',
+    borderWidth: 1,
+    width: (75 / 100) * width_device ,
+  }
 });
