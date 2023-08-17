@@ -1,5 +1,5 @@
 export default url = {
-    end_point_dev : 'http://devkasir.cobaktesbrow.com/api/',
+    end_point_dev : 'https://devkasir.cobaktesbrow.com/api/',
     
     url_login :'login',
     logout: 'logout-api',

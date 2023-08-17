@@ -6,14 +6,15 @@ import axios from 'axios';
 import url from './../endpoint/Endpoint';
 import { width_device } from '../style/StyleGlobal';
 import ButtonCustom from '../component/ButtonCustom';
+import { custom_toast } from '../component/ToastCustom';
 
 export default function Login({navigation}) {
 
-  const [email, setEmail] = useState({});
+  const [emailParam, setEmail] = useState();
   const [pass, setPass] = useState('');
   const [securePass, setSecurePass] = useState(true);
     const contexst = useContext(AppContext)
-    console.log('tess-',contexst.user.name);
+  
 
     const AjaxLoginApi = (url,param)=>{
         return new Promise((resolve,reject)=>{
@@ -29,8 +30,9 @@ export default function Login({navigation}) {
 
     //
     const submitToHomePage = async()=>{
-        const email_user = email.email;
-        const pass_user = pass.pass;
+        const email_user = emailParam;
+        const pass_user = pass;
+        console.log('ddd',emailParam);
 
         if (email_user == '' || pass_user == '' ) {
           return ToastAndroid.showWithGravity(
@@ -56,11 +58,17 @@ export default function Login({navigation}) {
         try {
           const result_api = await AjaxLoginApi(url_api,sent_param);
           const data_api = result_api.data;
-          if (result_api.status == 200) {
+          if(data_api.message == "success login"){
             contexst.setUserLogin({data_api});
             navigation.navigate('menu')
           }
-          console.log('sukses login');
+          
+          if (data_api.error) {
+              if (data_api.error.email) {
+                custom_toast("Email tidak valid");
+              }
+          }
+          console.log(data_api);
         } catch (error) {
             let msg_error = error.response.data.message;
             ToastAndroid.showWithGravity(
@@ -87,7 +95,7 @@ export default function Login({navigation}) {
         style={styles.input}
         placeholderTextColor="#B6BEAE" 
         placeholder="input email...."
-        onChangeText={(input)=>setEmail({email:input})}
+        onChangeText={(input)=>setEmail(input)}
       />
     
       <View style={styles.btn_eye}>
@@ -107,7 +115,7 @@ export default function Login({navigation}) {
             placeholderTextColor="#B6BEAE" 
             placeholder="input password...."
             secureTextEntry={securePass}
-            onChangeText={(input)=>setPass({pass:input})}
+            onChangeText={(input)=>setPass(input)}
           />
       </View>
       {/* <Button
