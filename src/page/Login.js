@@ -68,7 +68,7 @@ export default function Login({navigation}) {
                 custom_toast("Email tidak valid");
               }
           }
-          console.log(data_api);
+          // console.log(data_api);
         } catch (error) {
             let msg_error = error.response.data.message;
             ToastAndroid.showWithGravity(

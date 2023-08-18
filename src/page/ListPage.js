@@ -20,7 +20,7 @@ import { custom_toast } from './../component/ToastCustom';
 import ButtonCustom from '../component/ButtonCustom';
 import ComponentLoading from '../component/ComponentLoading';
 
-export default function ListPage() {
+export default function ListPage({navigation}) {
 
     const global_state = useContext(AppContext);
     const token_ =  global_state.userLogin.data_api.jwt_token;
@@ -33,7 +33,6 @@ export default function ListPage() {
     
 
     useEffect(()=>{
-        getUser();
         return ()=>{
 
         }
@@ -46,19 +45,7 @@ export default function ListPage() {
         }
     },[])
 
-    const getUser = ()=>{
-        const urlDummy = 'https://jsonplaceholder.typicode.com/users';
-        fetch(urlDummy)
-        .then((res)=> res.json())
-        .then((resJson)=>{
-            console.log('rrr',resJson);
-            setData(resJson)
-        })
-        .catch((err)=>{
-        console.log(err);
-        })
-        .finally(()=>setLoading(false))
-    }
+  
 
     const generateNewStruck = async () =>{
         const toko_id = global_state.userLogin.data_api.toko.id_toko
@@ -78,7 +65,7 @@ export default function ListPage() {
         //    console.log('error generate',error);   
         //    global_state.setProduct({id_trans : null});
         // }
-
+        setLoading(true);
         axios.post(url_generate,{},headers_config)
         .then(function (res_success_api) {
             const id_trans = res_success_api.data.data.id_struck.toString();
@@ -86,11 +73,20 @@ export default function ListPage() {
             setCode(id_trans);
         })
         .catch(function (error,param2) {
+            const status_err = error.response.data
+            if (status_err.status == "Token is Expired") {
+                custom_toast("Token expired, harap login kembali, tunggu 2 detik");
+                setTimeout(() => {
+                    navigation.navigate('login')
+                }, 2000);
+            }
            if (error.response.data) {
               custom_toast(error.response.data.msg)
               global_state.setProduct({id_trans : null});
            }
+           
         });
+        setLoading(false);
         
     }
 
@@ -129,9 +125,20 @@ export default function ListPage() {
                         setProduct(send_api.data.data)
                         console.log('data tidak ada');
                     }
+                    console.log("susget", send_api);
                 } catch (error) {
-                    setProduct(0)
-                    custom_toast(error.response.data.msg)
+                    if (error.response.status == 401) {
+                        setProduct(0)
+                        custom_toast("Token expired harap login lagi, tunggu 2 detik")
+                        setTimeout(() => {
+                            navigation.navigate('login')
+                        }, 2000);
+                        
+                    }else{
+                        setProduct(0)
+                        custom_toast(error.response.data.msg)
+                    }
+                    
                 }
                 setLoading(false);
             }else{
@@ -190,6 +197,13 @@ export default function ListPage() {
             console.log('suk',response);
         })
         .catch(function (error,param2) {
+            console.log("error creatre ker", error);
+            if (error.response.status == 401) {
+                custom_toast("Token expired harap login lagi, tunggu 2 detik")
+                setTimeout(() => {
+                    navigation.navigate('login')
+                }, 2000);
+            }
             if (error.response.data.data) {
                
                 //1 transaksi hnaya 1 jenis variant
