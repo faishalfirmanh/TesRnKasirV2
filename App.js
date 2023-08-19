@@ -47,7 +47,7 @@ const App: () => Node = () => {
        name : 'zlatan',
        image : 'https://awsimages.detik.net.id/community/media/visual/2023/06/05/zlatan-ibrahimovic-4_169.jpeg?w=600&q=90'
     }
-    setUser(user)
+    console.log("app",userLogin);
   }, [])
 
   	

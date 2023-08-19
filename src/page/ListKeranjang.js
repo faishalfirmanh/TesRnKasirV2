@@ -5,11 +5,12 @@ import React, {useState, useEffect,useContext} from 'react'
 import { AppContext } from './../context/AppContext';
 import { css_global } from './../style/StyleGlobal';
 import url from './../endpoint/Endpoint';
-import { RequestApiPostWithToken } from './../endpoint/RequestApi';
+import { RequestApiPostWithToken, RequestApiNoPromise } from './../endpoint/RequestApi';
 import { custom_toast } from './../component/ToastCustom';
 import { convert_number_coma } from './../component/HelperFunction';
 import ComponentLoading from '../component/ComponentLoading';
 import ButtonCustom from '../component/ButtonCustom';
+import axios from 'axios';
 
 export default function ListKeranjang({navigation}) {
   const [isLoading, setLoading] = useState(true);
@@ -23,7 +24,7 @@ export default function ListKeranjang({navigation}) {
 
   useEffect(() => {
     refreshtList()
-    console.log('use effect did mount');
+    console.log('use effect did mount',isLoading);
   }, [])
   
 
@@ -56,30 +57,35 @@ export default function ListKeranjang({navigation}) {
 
   const refreshtList = async () => {
     setLoading(true)
-    console.log('state==', global_state.product.id_trans);
+    const headers_config ={ headers: {"Authorization" : `Bearer ${token_}`}};
     const url_struck = `${url.end_point_dev}${url.get_struck}`;
     const param = {id_struck : `${global_state.product.id_trans}` }
-    const send_api = await RequestApiPostWithToken(url_struck,param, token_)
-    try {
-       const data_all = send_api.data.data[0].data;
-       const list_item = data_all.list
-       if (list_item.length > 0) {
+    RequestApiNoPromise(url_struck,param,token_)
+    .then((response)=>{
+        const data_all = response.data.data[0].data;
+        const list_item = data_all.list
+        if (list_item.length > 0) {
           const rincian_ = [ data_all.total_harga, data_all.dibayar, data_all.kembalian ]
-          setProductKeranjang(list_item)
-          setRincianProd(rincian_)
-       }else{
-        setProductKeranjang(0)
-        setRincianProd(0)
-       }
-       console.log('sukk',send_api);
-       
-       
-    } catch (error) {
-       setProductKeranjang({})
-       console.log('err dat',error);
-    }
-    setLoading(false);
-   
+            setProductKeranjang(list_item)
+            setRincianProd(rincian_)
+        }else{
+            setProductKeranjang(0)
+            setRincianProd(0)
+        }
+        setLoading(false);
+    })
+    .catch( (error) =>{
+      const json_error = error.toJSON();
+        if(json_error.status == 401) {
+            custom_toast("Token expired harap login lagi, tunggu 2 detik")
+            setTimeout(() => {
+                navigation.navigate('login')
+            }, 2000);
+        }else{
+          custom_toast("Eror get keranjang")
+        }
+        setLoading(false);
+    })
     
   }
 
@@ -96,17 +102,28 @@ export default function ListKeranjang({navigation}) {
       setLoading(false);
   }
 
-  const addChartPlus1 = async (idChart) =>{
+  const addChartPlus1 =  (idChart) =>{
+    console.log("awal",isLoading);
     setLoading(true);
     const url_add1 = `${url.end_point_dev}${url.add_plus_1}`;
     const param = {id_keranjang_kasir : idChart }
-    const send_api = await RequestApiPostWithToken(url_add1,param, token_)
-    try {
-       refreshtList()
-    } catch (error) {
-      custom_toast("gagal menambahkan keranjang")
-    }
-    setLoading(false);
+    RequestApiNoPromise(url_add1,param,token_)
+    .then((suk)=>{
+      refreshtList()
+    })
+    .catch( (error) =>{
+      const json_error = error.toJSON();
+        if(json_error.status == 401) {
+            custom_toast("Token expired harap login lagi, tunggu 2 detik")
+            setTimeout(() => {
+                navigation.navigate('login')
+            }, 2000);
+        }else{
+          custom_toast("gagal menambahkan keranjang")
+        }
+        setLoading(false);
+    })
+    
   }
 
   const deleteChart = async (idChart) =>{

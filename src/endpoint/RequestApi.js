@@ -25,3 +25,21 @@ export const RequestApiPostGenerate = (url, token) => {
         });
     })
 }
+
+
+export const RequestApiPostWithCustomToken = (url, param, token) => {
+    const headers_config = { headers: {"Authorization" : `Bearer ${token}`}};
+    return axios.post(url,param, headers_config).then((response) => {
+        return response
+    });
+}
+
+export const RequestApiNoPromise = async (url, param, token) => {
+    const headers_config = { headers: {"Authorization" : `Bearer ${token}`},  'Content-Type': 'application/json'};
+    try {
+        const response = await axios.post(url, param, headers_config);
+        return response;
+    } catch (error) {
+        throw error;
+    }
+}

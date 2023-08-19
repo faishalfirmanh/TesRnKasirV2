@@ -3,6 +3,8 @@ export default url = {
     
     url_login :'login',
     logout: 'logout-api',
+
+    cek_last_struckId: "kasir/get-last-struck-id",
     
     generate:'kasir/generate-new-struck',
     url_search_product : 'product/product-list-jual-price-search',
