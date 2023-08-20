@@ -1,6 +1,6 @@
 import { View, Text,FlatList, TouchableOpacity, ActivityIndicator, StyleSheet } from 'react-native'
 import React,{useState, useEffect,useContext} from 'react'
-import { RequestApiPostWithToken } from './../endpoint/RequestApi';
+import { RequestApiPostWithToken, RequestApiNoPromise } from './../endpoint/RequestApi';
 import { custom_toast } from './../component/ToastCustom';
 import { convert_number_coma, date_now_wib } from './../component/HelperFunction';
 import { BluetoothEscposPrinter } from 'react-native-bluetooth-escpos-printer';
@@ -11,7 +11,7 @@ import { css_global } from './../style/StyleGlobal';
 import ComponentLoading from '../component/ComponentLoading';
 import ButtonCustom from '../component/ButtonCustom';
 
-export default function ListPrint() {
+export default function ListPrint({navigation}) {
   const global_state = useContext(AppContext);
   const token_ =  global_state.userLogin.data_api.jwt_token;
   const [isLoading, setLoading] = useState(true);
@@ -26,23 +26,34 @@ export default function ListPrint() {
   }, [])
   
 
-  const reqViewStruck = async ()=>{
+  const reqViewStruck = ()=>{
       setLoading(true)
       const url_struck = `${url.end_point_dev}${url.get_struck}`;
       const param = {id_struck : `${global_state.product.id_trans}` }
-      const send_api = await RequestApiPostWithToken(url_struck,param, token_)
-      try {
-          const data_res = send_api.data.data[0].data;
+      RequestApiNoPromise(url_struck,param,token_)
+      .then((response)=>{
+          const data_res = response.data.data[0].data;
           setProd(data_res.list)
           setPriceBayar(data_res.dibayar)
           setPriceKembalian(data_res.kembalian)
           setTotal(data_res.total_harga)
           setDate(data_res.tanggal)
-          console.log('sukses req struck', data_res);
-      } catch (error) {
-        console.log('error get', error);
-      }  
-      setLoading(false)
+      })
+      .catch((error)=>{
+        const json_error = error.toJSON();
+        if(json_error.status == 401) {
+            custom_toast("Token expired harap login lagi, tunggu 2 detik")
+            setTimeout(() => {
+                navigation.navigate('login')
+            }, 2000);
+        }else{
+          custom_toast("gagal error get keranjang")
+        }
+      })
+      .finally(()=>{
+        setLoading(false)
+      })
+     
   }
 
 

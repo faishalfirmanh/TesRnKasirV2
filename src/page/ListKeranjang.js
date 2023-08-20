@@ -91,15 +91,27 @@ export default function ListKeranjang({navigation}) {
 
   const removeChartMin1 = async (idChart) =>{
       setLoading(true);
-      const url_add1 = `${url.end_point_dev}${url.remove_min_1}`;
+      const url_min1 = `${url.end_point_dev}${url.remove_min_1}`;
       const param = {id_keranjang_kasir : idChart }
-      const send_api = await RequestApiPostWithToken(url_add1,param, token_)
-      try {
+      
+      RequestApiNoPromise(url_min1, param, token_)
+      .then((suk)=>{
         refreshtList()
-      } catch (error) {
-        custom_toast("gagal kurangi keranjang")
-      }
-      setLoading(false);
+      })
+      .catch((err)=>{
+          const json_error = err.toJSON();
+          if(json_error.status == 401) {
+              custom_toast("Token expired harap login lagi, tunggu 2 detik")
+              setTimeout(() => {
+                  navigation.navigate('login')
+              }, 2000);
+          }else{
+            custom_toast("gagal kurangi keranjang")
+          }
+      })
+      .finally(()=>{
+        setLoading(false)
+      })
   }
 
   const addChartPlus1 =  (idChart) =>{
@@ -126,17 +138,29 @@ export default function ListKeranjang({navigation}) {
     
   }
 
-  const deleteChart = async (idChart) =>{
+  const deleteChart =  (idChart) =>{
       setLoading(true);
-      const url_add1 = `${url.end_point_dev}${url.delete_chart}`;
+      const url_delete = `${url.end_point_dev}${url.delete_chart}`;
       const param = {id_keranjang_kasir : idChart }
-      const send_api = await RequestApiPostWithToken(url_add1,param, token_)
-      try {
+      RequestApiNoPromise(url_delete, param, token_)
+      .then((suk)=>{
         refreshtList()
-      } catch (error) {
-        custom_toast("gagal hapus keranjang")
-      }
-      setLoading(false);
+      })
+      .catch((err)=>{
+          const json_error = err.toJSON();
+          if(json_error.status == 401) {
+              custom_toast("Token expired harap login lagi, tunggu 2 detik")
+              setTimeout(() => {
+                  navigation.navigate('login')
+              }, 2000);
+          }else{
+            custom_toast("gagal hapus keranjang")
+          }
+      })
+      .finally(()=>{
+        setLoading(false)
+      })
+
   }
 
   function checkState () {
@@ -145,46 +169,57 @@ export default function ListKeranjang({navigation}) {
    
   }
 
-  const reqApiInputUserBeli = async () =>{
+  const reqApiInputUserBeli = () =>{
     setLoading(true);
     const url_bayar = `${url.end_point_dev}${url.price_user_bayar}`
     const param = { id_struck : global_state.product.id_trans, user_bayar : price_bayar }
-    try {
-      const send_api = await RequestApiPostWithToken(url_bayar, param, token_);
-      const res_success = send_api.data.data;
+    RequestApiNoPromise(url_bayar, param, token_)
+    .then((response)=>{
+      console.log(response);
+      const res_success = response.data.data;
       const bayar_res = res_success.pembeli_bayar;
       const kembalian_res = res_success.kembalian;
       setPriceKembalian(kembalian_res);
       setPriceBayar(bayar_res)
       navigation.navigate('listPrint')
-    } catch (error) {
-       if (error.response.data.data.user_bayar) {
-         custom_toast(`Pembeli harus bayar lebih dari sama dengan ${rincianProd[0]}`)
-         setPriceBayar(0)
-         setPriceKembalian(0);
-       }
-    } finally {
-      console.log('finally');
-    }
-    setLoading(false);
-    
+    })
+    .catch((err)=>{
+        const json_error = err.toJSON();
+        if(json_error.status == 401) {
+            custom_toast("Token expired harap login lagi, tunggu 2 detik")
+            setTimeout(() => {
+                navigation.navigate('login')
+            }, 2000);
+        }
 
+        if(err.response.data.data.user_bayar) {
+          custom_toast(`Pembeli harus bayar lebih dari sama dengan ${rincianProd[0]}`)
+          setPriceBayar(0)
+          setPriceKembalian(0);
+        }else{
+          custom_toast(`Error input user bayar`)
+        }
+    })
+    .finally(()=>{
+      setLoading(false)
+    });
+   
   }
 
   const itemRednerList = ({item, index}) =>{
     const id_chart = item.id_keranjang_kasir;
     return(
-      <View style={{height:150,left:10,top:10}}>
+      <View style={{height:160,left:10,top:10}}>
         <View
           style={{
             borderBottomColor: 'black',
             borderBottomWidth:3,
           }}
         />
-        <Text>Name: {item.nama_product}</Text>
-        <Text>Harga tiap item: {convert_number_coma(item.harga_tiap_item)} </Text>
-        <Text>Jumlah : {item.jumlah_item_dibeli}</Text>
-        <Text>Total harga item : {convert_number_coma(item.total_harga_item)}</Text>
+        <Text style={{fontSize:15,color:"black"}}>Name: {item.nama_product}</Text>
+        <Text style={{color:"black"}}>Harga tiap item: {convert_number_coma(item.harga_tiap_item)} </Text>
+        <Text style={{color:"black"}}>Jumlah : {item.jumlah_item_dibeli} {item.is_kg == 1 ? "kg/liter" : "PCS"}</Text>
+        <Text style={{color:"black"}}>Total harga item : {convert_number_coma(item.total_harga_item)}</Text>
         <View style={{flex:1,flexDirection:'row'}}>
           <TouchableOpacity 
             onPress={(e)=>addChartPlus1(id_chart)}
@@ -194,7 +229,7 @@ export default function ListKeranjang({navigation}) {
           <TouchableOpacity 
             onPress={(e)=>removeChartMin1(id_chart)}
             style={{backgroundColor:'blue',width:40,height:40,top:8,left:10, borderRadius:8}}>
-            <Text style={{textAlign:'center',fontSize:30}}>-</Text>
+            <Text style={{textAlign:'center',fontSize:30,marginTop:-6}}>-</Text>
           </TouchableOpacity>
           <TouchableOpacity 
             onPress={(e)=>deleteChart(id_chart)}
@@ -216,7 +251,7 @@ export default function ListKeranjang({navigation}) {
 
   return (
     <View style={{backgroundColor:'white'}}>
-      <Text style={{color:'black',marginLeft:12,marginBottom:15}}>No Transaksi {global_state.product.id_trans}</Text>
+      <Text style={{color:'black',marginLeft:12,marginBottom:15,marginTop:10}}>No Transaksi {global_state.product.id_trans}</Text>
       {/* <TouchableOpacity 
        onPress={()=> refreshtList()}
        style={css_global.buttonStyle}>
@@ -288,7 +323,7 @@ const style =  StyleSheet.create({
   },
   viewList:{
     height:340,
-    backgroundColor:'green',
+    backgroundColor:'#99FF34',
     alignContent:'center',
     borderRadius:6,
     left:20,
