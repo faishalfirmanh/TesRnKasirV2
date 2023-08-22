@@ -1,5 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity, FlatList, 
-  TextInput,
+import { View, Text, StyleSheet, TouchableOpacity, FlatList,
   Image } from 'react-native'
 import React, {useState, useEffect,useContext} from 'react'
 import { AppContext } from './../context/AppContext';
@@ -10,7 +9,8 @@ import { custom_toast } from './../component/ToastCustom';
 import { convert_number_coma } from './../component/HelperFunction';
 import ComponentLoading from '../component/ComponentLoading';
 import ButtonCustom from '../component/ButtonCustom';
-import axios from 'axios';
+
+import ComponentTextInput from './../component/ComponentTextInput';
 
 export default function ListKeranjang({navigation}) {
   const [isLoading, setLoading] = useState(true);
@@ -250,7 +250,7 @@ export default function ListKeranjang({navigation}) {
   }
 
   return (
-    <View style={{backgroundColor:'white'}}>
+    <View>
       <Text style={{color:'black',marginLeft:12,marginBottom:15,marginTop:10}}>No Transaksi {global_state.product.id_trans}</Text>
       {/* <TouchableOpacity 
        onPress={()=> refreshtList()}
@@ -272,12 +272,12 @@ export default function ListKeranjang({navigation}) {
       <Text style={{backgroundColor:'white', top:5,left:12,textAlign:'left',color:'black'}}>
         {label_price}
       </Text>
-      <TextInput 
-        onChangeText={(e)=> inputPricePembeli(e)}
-        keyboardType='numeric'
-        style={css_global.textInputStyle}>
-
-      </TextInput>
+     
+      <ComponentTextInput
+          functioOnChangeCustom={(e)=>inputPricePembeli(e)}
+          can_edit={true}
+          tipeKeyboardProps="numeric"
+      />
 
       <ButtonCustom
          mLeft={12}
@@ -323,7 +323,7 @@ const style =  StyleSheet.create({
   },
   viewList:{
     height:340,
-    backgroundColor:'#99FF34',
+    backgroundColor:'#fbf2c6',
     alignContent:'center',
     borderRadius:6,
     left:20,

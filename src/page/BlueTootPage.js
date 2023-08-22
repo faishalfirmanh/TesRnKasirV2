@@ -8,13 +8,17 @@ import {
   Platform,
   ActivityIndicator,
   Button } from 'react-native'
-import React, { Component, useState, useEffect, useCallback } from 'react'
+import React, { Component, useState, useEffect, useCallback, useContext } from 'react'
 import {BluetoothManager} from 'react-native-bluetooth-escpos-printer';
 import {PERMISSIONS, requestMultiple, RESULTS} from 'react-native-permissions';
 import { css_global } from './../style/StyleGlobal';
 import ItemList from './../component/ItemList';
 
+import { AppContext } from './../context/AppContext';
+
 export default function BlueTootPage (){
+  const global_state_contexst = useContext(AppContext)
+
   const [pairedDevices, setPairedDevices] = useState([]);
   const [foundDs, setFoundDs] = useState([]);
   const [bleOpend, setBleOpend] = useState(false);
@@ -27,6 +31,7 @@ export default function BlueTootPage (){
       enabled => {
         setBleOpend(Boolean(enabled));
         setLoading(false);
+        global_state_contexst.setDataBlueTooth({bluetooth_is_on : Boolean(enabled)})
       },
       err => {
         err;
@@ -51,6 +56,7 @@ export default function BlueTootPage (){
           () => {
             setName('');
             setBoundAddress('');
+            global_state_contexst.setListBlueToothConnect({bluetooth_connect_context : ""})
           },
         );
         DeviceEventEmitter.addListener(
@@ -125,6 +131,7 @@ export default function BlueTootPage (){
       s => {
         setLoading(false);
         setBoundAddress(row.address);
+        global_state_contexst.setListBlueToothConnect({bluetooth_connect_context : row.address})
         setName(row.name || 'UNKNOWN');
         console.log('sukses connect to print');
       },
@@ -142,6 +149,7 @@ export default function BlueTootPage (){
       s => {
         setLoading(false);
         setBoundAddress('');
+        global_state_contexst.setListBlueToothConnect({bluetooth_connect_context : ""})
         setName('');
       },
       e => {

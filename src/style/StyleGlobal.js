@@ -6,11 +6,13 @@ export const height_device = Dimensions.get('window').height;
 
 export const css_global = StyleSheet.create({
     textInputStyle:{
-        height: 40,
+        height: 45,
         margin: 12,
-        borderWidth: 1,
+        borderWidth: 1.5,
+        borderRadius:4,
         color:'black',
-        backgroundColor:'yellow'
+        backgroundColor:'white',
+        paddingLeft:10
     },
     buttonStyle:{
         marginLeft:12,

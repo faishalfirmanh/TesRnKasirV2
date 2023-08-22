@@ -23,6 +23,7 @@ export default function ListPrint({navigation}) {
 
   useEffect(() => {
     reqViewStruck()
+    console.log(global_state.dataBlueTooth);
   }, [])
   
 
@@ -53,15 +54,27 @@ export default function ListPrint({navigation}) {
       .finally(()=>{
         setLoading(false)
       })
+      console.log(global_state.dataListcBlueToothConnect);
+  }
+
+  const btnPrint = async () =>{
+      let blueobj = Object.keys(global_state.dataBlueTooth)
+      let blueConect = Object.keys(global_state.dataListcBlueToothConnect)
+      if (global_state.dataBlueTooth == false || blueobj.length == 0) {
+          custom_toast("Bluetooth harap diaktifkan")
+          console.log("blue tot tidak aktif");
+      }else if(global_state.dataListcBlueToothConnect === "" || blueConect.length == 0){
+          custom_toast("Printer bluetooth tidak ada yang terhubung")
+          console.log("pragnkt tidakt erhubug");
+      }else{
+        successPrint();
+      }
      
   }
 
-
-  const btnPrint = async ()=>{
+  const successPrint = async ()=>{
     // console.log(listProd);
-    console.log('Print');
-   
-    let columnWidths = [20, 28];
+    
     await BluetoothEscposPrinter.printerUnderLine(1);
     await BluetoothEscposPrinter.printText(`${dateStruck} \n`,{
       encoding: 'GBK',

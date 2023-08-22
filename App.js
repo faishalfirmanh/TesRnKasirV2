@@ -7,7 +7,6 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import type {Node} from 'react';
 import Login from './src/page/Login';
 import Home from './src/page/Home';
 import ListPage from './src/page/ListPage';
@@ -36,11 +35,13 @@ import {
 
 const Stack = createNativeStackNavigator();
 
-const App: () => Node = () => {
+const App = () => {
 
   const [user, setUser] = useState({})
   const [userLogin, setUserLogin] = useState({})
   const [product, setProduct] = useState({});
+  const [dataBlueTooth, setDataBlueTooth] = useState({});
+  const [dataListcBlueToothConnect, setListBlueToothConnect] = useState({});
 
   useEffect(() => {
     const user = {
@@ -58,7 +59,11 @@ const App: () => Node = () => {
     userLogin,
     setUserLogin,
     product,
-    setProduct
+    setProduct,
+    dataBlueTooth,
+    setDataBlueTooth,
+    setListBlueToothConnect,
+    dataListcBlueToothConnect
   }
 
   const bottomTap =  createBottomTabNavigator();

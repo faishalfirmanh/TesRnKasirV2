@@ -19,6 +19,7 @@ import { RequestApiPostWithToken,RequestApiPostGenerate } from './../endpoint/Re
 import { custom_toast } from './../component/ToastCustom';
 import ButtonCustom from '../component/ButtonCustom';
 import ComponentLoading from '../component/ComponentLoading';
+import ComponentTextInput from '../component/ComponentTextInput';
 
 export default function ListPage({navigation}) {
 
@@ -51,26 +52,15 @@ export default function ListPage({navigation}) {
         const toko_id = global_state.userLogin.data_api.toko.id_toko
         const url_generate = `${url.end_point_dev}${url.generate}`
         const headers_config = { headers: {"Authorization" : `Bearer ${token_}`}};
-        /** testing */
-        // global_state.setProduct({id_trans : '27'});
-        // setCode('27');
-
-        /** real api (bisa) tess */
-        // const result_api = await RequestApiPostGenerate(url_generate,token_);
-        // try {
-            // const id_trans = result_api.data.data.id_struck.toString();
-            // global_state.setProduct({id_trans : id_trans});
-            // setCode(id_trans);
-        // } catch (error) {
-        //    console.log('error generate',error);   
-        //    global_state.setProduct({id_trans : null});
-        // }
         setLoading(true);
         axios.post(url_generate,{},headers_config)
         .then(function (res_success_api) {
             const id_trans = res_success_api.data.data.id_struck.toString();
             global_state.setProduct({id_trans : id_trans});
             setCode(id_trans);
+            console.log("generate");
+            setInputProd('')
+            console.log(inputProd);
         })
         .catch(function (error,param2) {
             const status_err = error.response.data
@@ -243,13 +233,8 @@ export default function ListPage({navigation}) {
     <View style={{flex:1}}>
         
         <Text style={{...css_global.textStyle,marginTop:10}}>1. Generate Kode transaksi</Text>
-        <TextInput style={css_global.textInputStyle} value={code} editable={false}></TextInput>
-        {/* <TouchableOpacity 
-            onPress={()=>generateNewStruck()}
-            style={css_global.buttonStyle}
-            disabled={false}>
-            <Text style={css_global.textStyleButton}>Generate</Text>
-        </TouchableOpacity> */}
+        <TextInput style={{...css_global.textInputStyle,color:'gray'}} value={code} editable={false}></TextInput>
+       
         <ButtonCustom 
             mLeft={12}
             mTop={5}
@@ -261,11 +246,12 @@ export default function ListPage({navigation}) {
             btnOnSubmitProps={() => generateNewStruck()} />
 
         <Text style={{...css_global.textStyle,marginTop:10}}>2. Masukkan nama product</Text>
-        <TextInput 
-            onChangeText={(e)=>sugestProductList(e)}
-            editable={code == '' ? false : true}
-            style={css_global.textInputStyle}>
-        </TextInput>
+       
+        <ComponentTextInput
+            functioOnChangeCustom={(e)=>sugestProductList(e)}
+            can_edit={code == '' ? false : true}
+            tipeKeyboardProps="default"
+        />
 
         <View style={style.wrapList}>
             {isLoading ? <ComponentLoading/> : (
