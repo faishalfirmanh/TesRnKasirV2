@@ -247,7 +247,6 @@ export default function BlueTootPage (){
 
     return (
       <View style={styles.container}>
-        <Text style={css_global.textStyle}>BlueTootPage</Text>
         <Button  onPress={() => scanBluetoothDevice()} title="Scan Bluetooth" />
         <View style={styles.bluetoothStatusContainer}>
           <Text style={styles.bluetoothStatus(bleOpend ? '#47BF34' : '#A8A9AA')}>

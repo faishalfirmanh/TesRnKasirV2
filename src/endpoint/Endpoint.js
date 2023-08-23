@@ -1,5 +1,8 @@
+import {URL_API} from "@env";
+
+
 export default url = {
-    end_point_dev : 'https://devkasir.cobaktesbrow.com/api/',
+    end_point_dev :  URL_API,
     
     url_login :'login',
     logout: 'logout-api',

@@ -8,7 +8,6 @@
 
 import React, { useState, useEffect } from 'react';
 import Login from './src/page/Login';
-import Home from './src/page/Home';
 import ListPage from './src/page/ListPage';
 import ListKeranjang from './src/page/ListKeranjang';
 import ListPrint from './src/page/ListPrint';
@@ -21,14 +20,7 @@ import { AppContext } from './src/context/AppContext';
 
 import NavigatorCustom from './src/component/NavigatorCustom';
 import {
-
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
   StyleSheet,
-  Text,
-  useColorScheme,
-  View,
   LogBox
 } from 'react-native';
 

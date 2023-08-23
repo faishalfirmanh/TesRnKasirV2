@@ -3,14 +3,12 @@ import { View,
     TouchableOpacity, 
     StyleSheet,
     FlatList,
-    ActivityIndicator,
-    ScrollView,
     TextInput,
     ToastAndroid,
     Image
  } from 'react-native'
 import React, {useState, useEffect,useContext} from 'react'
-import InputSearch from './../component/InputSearch';
+
 import { css_global, height_device, width_device } from './../style/StyleGlobal';
 import { AppContext } from './../context/AppContext';
 import axios from 'axios';
