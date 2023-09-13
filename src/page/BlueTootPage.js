@@ -7,7 +7,8 @@ import {
   StyleSheet,
   Platform,
   ActivityIndicator,
-  Button } from 'react-native'
+  Button, 
+  FlatList} from 'react-native'
 import React, { Component, useState, useEffect, useCallback, useContext } from 'react'
 import {BluetoothManager} from 'react-native-bluetooth-escpos-printer';
 import {PERMISSIONS, requestMultiple, RESULTS} from 'react-native-permissions';
@@ -25,6 +26,59 @@ export default function BlueTootPage (){
   const [loading, setLoading] = useState(true);
   const [name, setName] = useState('');
   const [boundAddress, setBoundAddress] = useState('');
+
+  const cobaAllPrint = [
+    {
+      id : 1,
+      name :"adfdasf",
+      address : "malang1"
+    },
+    {
+      id : 2,
+      name :"DUA",
+      address : "malang2"
+    },
+    {
+      id : 3,
+      name :"tiga",
+      address : "malang3"
+    },
+    {
+      id : 4,
+      name :"empat",
+      address : "malan4"
+    },
+    {
+      id : 5,
+      name :"lima",
+      address : "malang5"
+    },
+    {
+      id : 6,
+      name :"enam",
+      address : "malang6"
+    },
+    {
+      id : 7,
+      name :"tuju",
+      address : "malang7"
+    },
+    {
+      id : 8,
+      name :"delapan",
+      address : "malang8"
+    },
+    {
+      id : 9,
+      name :"semlian",
+      address : "malang9"
+    },
+    {
+      id : 10,
+      name :"sepuluh",
+      address : "malang10"
+    }
+  ]
 
   useEffect(() => {
     BluetoothManager.isBluetoothEnabled().then(
@@ -243,6 +297,19 @@ export default function BlueTootPage (){
     }
   };
 
+  const  renderListBluetootConnect =({item, index}) => {
+      return(
+        <ItemList
+          key={index}
+          onPress={() => connectToPrint(item)}
+          label={item.name}
+          value={item.address}
+          connected={item.address === boundAddress}
+          actionText="Hubungkan"
+          color="#00BCD4"
+        />
+      );
+  }
   
 
     return (
@@ -272,8 +339,9 @@ export default function BlueTootPage (){
         Bluetooth yang terhubung ke HP ini:
       </Text>
       {loading ? <ActivityIndicator animating={true} /> : null}
-      <View style={styles.containerList}>
-        {pairedDevices.map((item, index) => {
+      <View style={styles.containerList}> 
+        {/* pairedDevices */}
+        {/* {pairedDevices.map((item, index) => {
           return (
             <ItemList
               key={index}
@@ -285,7 +353,14 @@ export default function BlueTootPage (){
               color="#00BCD4"
             />
           );
-        })}
+        })} */}
+        {
+           <FlatList
+           data={pairedDevices}
+           renderItem={renderListBluetootConnect}
+           keyExtractor={item => `${item.address}`}
+           />
+        }
       </View>
      
       </View>
@@ -300,7 +375,7 @@ export const styles = StyleSheet.create({
     paddingTop: 40,
     paddingHorizontal: 20,
   },
-  containerList: { flex: 1, flexDirection: 'column' },
+  containerList: { flex: 1, flexDirection: 'column',marginBottom:100 },
   bluetoothStatusContainer: { justifyContent: 'flex-end', alignSelf: 'flex-end',marginTop:10 },
   bluetoothStatus: color => ({
     backgroundColor: color,
