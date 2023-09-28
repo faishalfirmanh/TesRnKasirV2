@@ -22,6 +22,8 @@ export default url = {
 
     price_user_bayar : 'kasir/input-price-user-bayar',
 
-    get_struck : 'kasir/get-view-struck-barang'
+    get_struck : 'kasir/get-view-struck-barang',
+    
+    get_product_jual_id : 'product/product-jual-byid'
 
 }

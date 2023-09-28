@@ -6,7 +6,7 @@ import { css_global } from './../style/StyleGlobal';
 import url from './../endpoint/Endpoint';
 import { RequestApiPostWithToken, RequestApiNoPromise } from './../endpoint/RequestApi';
 import { custom_toast } from './../component/ToastCustom';
-import { convert_number_coma } from './../component/HelperFunction';
+import { convertNameProdcut, convert_number_coma } from './../component/HelperFunction';
 import ComponentLoading from '../component/ComponentLoading';
 import ButtonCustom from '../component/ButtonCustom';
 
@@ -207,6 +207,7 @@ export default function ListKeranjang({navigation}) {
   }
 
   const itemRednerList = ({item, index}) =>{
+    console.log('tess--',item);
     const id_chart = item.id_keranjang_kasir;
     return(
       <View style={{height:160,left:10,top:10}}>
@@ -216,7 +217,7 @@ export default function ListKeranjang({navigation}) {
             borderBottomWidth:3,
           }}
         />
-        <Text style={{fontSize:15,color:"black"}}>Name: {item.nama_product}</Text>
+        <Text style={{fontSize:15,color:"black"}}>Name:  {convertNameProdcut(item.nama_product,item.is_kg,item.subname, item.nama_product_variant)}</Text>
         <Text style={{color:"black"}}>Harga tiap item: {convert_number_coma(item.harga_tiap_item)} </Text>
         <Text style={{color:"black"}}>Jumlah : {item.jumlah_item_dibeli} {item.is_kg == 1 ? "kg/liter" : "PCS"}</Text>
         <Text style={{color:"black"}}>Total harga item : {convert_number_coma(item.total_harga_item)}</Text>

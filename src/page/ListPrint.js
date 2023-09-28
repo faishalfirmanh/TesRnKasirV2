@@ -2,7 +2,7 @@ import { View, Text,FlatList, TouchableOpacity, ActivityIndicator, StyleSheet } 
 import React,{useState, useEffect,useContext} from 'react'
 import { RequestApiPostWithToken, RequestApiNoPromise } from './../endpoint/RequestApi';
 import { custom_toast } from './../component/ToastCustom';
-import { convert_number_coma, date_now_wib } from './../component/HelperFunction';
+import { convert_number_coma,convertNameProdcut, date_now_wib } from './../component/HelperFunction';
 import { BluetoothEscposPrinter } from 'react-native-bluetooth-escpos-printer';
 
 import { AppContext } from './../context/AppContext';
@@ -136,6 +136,7 @@ export default function ListPrint({navigation}) {
   }
 
   const itemRenderProduct = ({item, index}) =>{
+    const nameP = convertNameProdcut(item.nama_product,item.is_kg,item.subname, item.nama_product_variant);
     return(
       <View style={{height:80,left:10,top:10}}>
           <View
@@ -144,7 +145,7 @@ export default function ListPrint({navigation}) {
               borderBottomWidth:3,
             }}
           />
-          <Text style={{color:'black'}}>{item.nama_product}</Text>
+          <Text style={{color:'black'}}>{nameP}</Text>
           <Text style={{color:'black'}}>{item.jumlah_item_dibeli} x {convert_number_coma(item.harga_tiap_item)} = {convert_number_coma(item.total_harga_item)}</Text>
       </View>
     )

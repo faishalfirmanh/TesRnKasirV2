@@ -13,7 +13,7 @@ import { css_global, height_device, width_device } from './../style/StyleGlobal'
 import { AppContext } from './../context/AppContext';
 import axios from 'axios';
 import url from './../endpoint/Endpoint';
-import { RequestApiPostWithToken,RequestApiPostGenerate } from './../endpoint/RequestApi';
+import { RequestApiPostWithToken,RequestApiNoPromise } from './../endpoint/RequestApi';
 import { custom_toast } from './../component/ToastCustom';
 import ButtonCustom from '../component/ButtonCustom';
 import ComponentLoading from '../component/ComponentLoading';
@@ -113,7 +113,7 @@ export default function ListPage({navigation}) {
                         setProduct(send_api.data.data)
                         console.log('data tidak ada');
                     }
-                    console.log("susget", send_api);
+                    
                 } catch (error) {
                     if (error.response.status == 401) {
                         setProduct(0)
@@ -160,53 +160,31 @@ export default function ListPage({navigation}) {
     }
 
 
-    const addProductToKeranjang = async (id_product) =>{
+    const addProductToKeranjang =  (id_product) =>{
         const url_ad = `${url.end_point_dev}${url.create_chart}`;
         const param_add = {
             struck_id : code,
             status : 0,
-            product_jual_id : id_product
-            // jumlah_item_dibeli: 1
+            product_jual_id : id_product,
+            jumlah_item_dibeli: 1
         }
-        // const res_api = await RequestApiPostWithToken(url_ad,param_add,token_)
-        // try {
-        //     const sukses_keranjang = res_api.data
-        //     custom_toast("sukses menambahkan ke keranjang");
-        //     console.log('sukses keranjnag');
-        //     console.log(sukses_keranjang);
-        // } catch (error) {
-        //     console.log('error add keranjang');
-        // }
-        const headers_config = { headers: {"Authorization" : `Bearer ${token_}`}};
-        axios.post(url_ad, param_add, headers_config)
-        .then(function (response) {
-            const sukses_keranjang = response.data
+        RequestApiNoPromise(url_ad,param_add,token_)
+        .then((ress)=>{
+            const sukses_keranjang = ress.data
             custom_toast("sukses menambahkan ke keranjang");
-            console.log('suk',response);
         })
-        .catch(function (error,param2) {
-            console.log("error creatre ker", error);
+        .catch( (error) =>{
             if (error.response.status == 401) {
                 custom_toast("Token expired harap login lagi, tunggu 2 detik")
                 setTimeout(() => {
                     navigation.navigate('login')
                 }, 2000);
             }
-            if (error.response.data.data) {
-               
-                //1 transaksi hnaya 1 jenis variant
-                if (error.response.data.data[0].data.id_keranjang_kasir) { 
-                    custom_toast(error.response.data.data[0].data.id_keranjang_kasir)
-                }
-
-                // if (error.response.data.data.struck_id[0]) { //select id invalid
-                //     //console.log('error id',error.response.data.data.struck_id[0]);
-                //     custom_toast(error.response.data.data.struck_id[0])
-                // }
-                console.log('error create keranjang',error.response.data.data);
-               
+            if (error.response.data.data[0].data.msg) {
+                custom_toast("gagal tambah keranjang, stuck tidak mencukupi")
             }
-        });
+        })
+       
     }
 
 
