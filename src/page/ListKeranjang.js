@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, TouchableOpacity, FlatList,
-  Image } from 'react-native'
+  Image, Keyboard } from 'react-native'
 import React, {useState, useEffect,useContext} from 'react'
 import { AppContext } from './../context/AppContext';
 import { css_global } from './../style/StyleGlobal';
@@ -56,6 +56,9 @@ export default function ListKeranjang({navigation}) {
 
 
   const refreshtList = async () => {
+    Keyboard.dismiss();
+    setLabelPrice(0)
+    setPriceBayar(0)
     setLoading(true)
     const headers_config ={ headers: {"Authorization" : `Bearer ${token_}`}};
     const url_struck = `${url.end_point_dev}${url.get_struck}`;
@@ -163,11 +166,7 @@ export default function ListKeranjang({navigation}) {
 
   }
 
-  function checkState () {
-    // setLoading(false)
-    console.log('cek state, loding', isLoading);
-   
-  }
+ 
 
   const reqApiInputUserBeli = () =>{
     setLoading(true);

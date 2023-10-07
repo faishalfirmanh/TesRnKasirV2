@@ -45,4 +45,11 @@ export const css_global = StyleSheet.create({
     icon_tab:{
       
     }
+    ,
+    borderRed :{
+        borderColor:'red'
+    },
+    borderBlack :{
+        borderColor:'black',
+    }
 })
