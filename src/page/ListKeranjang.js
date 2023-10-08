@@ -2,7 +2,7 @@ import { View, Text, StyleSheet, TouchableOpacity, FlatList,
   Image, Keyboard } from 'react-native'
 import React, {useState, useEffect,useContext} from 'react'
 import { AppContext } from './../context/AppContext';
-import { css_global } from './../style/StyleGlobal';
+import { css_global, height_device, width_device } from './../style/StyleGlobal';
 import url from './../endpoint/Endpoint';
 import { RequestApiPostWithToken, RequestApiNoPromise } from './../endpoint/RequestApi';
 import { custom_toast } from './../component/ToastCustom';
@@ -209,7 +209,7 @@ export default function ListKeranjang({navigation}) {
     console.log('tess--',item);
     const id_chart = item.id_keranjang_kasir;
     return(
-      <View style={{height:160,left:10,top:10}}>
+      <View style={{height:(22 / 100) * height_device,left:10,top:10}}>
         <View
           style={{
             borderBottomColor: 'black',
@@ -223,23 +223,23 @@ export default function ListKeranjang({navigation}) {
         <View style={{flex:1,flexDirection:'row'}}>
           <TouchableOpacity 
             onPress={(e)=>addChartPlus1(id_chart)}
-            style={{backgroundColor:'blue',width:40,height:40,top:8, borderRadius:8}}>
-            <Text style={{textAlign:'center',top:6,fontSize:18}}>+</Text>
+            style={{backgroundColor:'blue',width:(10 / 100) * width_device,height:(10 / 100) * width_device,top:(2 / 100) * width_device, borderRadius:8}}>
+            <Text style={{textAlign:'center',top:6,fontSize:18,color:'white'}}>+</Text>
           </TouchableOpacity>
           <TouchableOpacity 
             onPress={(e)=>removeChartMin1(id_chart)}
-            style={{backgroundColor:'blue',width:40,height:40,top:8,left:10, borderRadius:8}}>
-            <Text style={{textAlign:'center',fontSize:30,marginTop:-6}}>-</Text>
+            style={{backgroundColor:'blue',width:(10 / 100) * width_device,height:(10 / 100) * width_device,top:(2 / 100) * width_device,left:10, borderRadius:8}}>
+            <Text style={{textAlign:'center',fontSize:30,marginTop:-6,color:'white'}}>-</Text>
           </TouchableOpacity>
           <TouchableOpacity 
             onPress={(e)=>deleteChart(id_chart)}
-            style={{width:40,height:40,top:8,left:20, borderRadius:8}}>
+            style={{width:(10 / 100) * width_device,height:(10 / 100) * width_device,top:(2 / 100) * width_device,left:20, borderRadius:8}}>
                       <Image 
                         source={require('../img/trash.png')} 
                         resizeMode="contain"
                         style={{
-                            width:40,
-                            height:40,
+                            width:(10 / 100) * width_device,
+                            height:(10 / 100) * width_device,
                         }}
                       />
           </TouchableOpacity>
@@ -258,10 +258,10 @@ export default function ListKeranjang({navigation}) {
         <Text style={css_global.textStyleButton}>Refresh</Text>
       </TouchableOpacity> */}
       <ButtonCustom
-         mLeft={12}
-         mTop={5}
+         mLeft={(3 / 100) *  width_device}
+         mTop={(1 / 100) *  height_device}
          f_size={13}
-         widthCusBtn={80}
+         widthCusBtn={(11 / 100) *  height_device}
          heightBtnPercentDevice={5}
          text={"Refresh"} 
          isSuccess={true} 
@@ -280,10 +280,10 @@ export default function ListKeranjang({navigation}) {
       />
 
       <ButtonCustom
-         mLeft={12}
-         mTop={5}
+         mLeft={(3 / 100) * width_device}
+         mTop={(1 / 100) *  height_device}
          f_size={14}
-         widthCusBtn={75}
+         widthCusBtn={(18 / 100) * width_device}
          heightBtnPercentDevice={6}
          text={"Hitung"} 
          isSuccess={true} 
@@ -305,7 +305,7 @@ export default function ListKeranjang({navigation}) {
                       renderItem={itemRednerList}
                       keyExtractor={item => `${item.id_keranjang_kasir}`}
                     />
-                    <Text style={{color:'black',top:25}}>Total : {rincianProd[0]} | bayar {convert_number_coma(price_bayar)}</Text>
+                    <Text style={{color:'black',top:(8 / 100) *  height_device}}>Total : {rincianProd[0]} | bayar {convert_number_coma(price_bayar)}</Text>
                  </View>
 
               )}
@@ -316,17 +316,17 @@ export default function ListKeranjang({navigation}) {
 
 const style =  StyleSheet.create({
   wrapList :{
-      marginTop:16,
-      marginBottom:20,
-      height:350,
+      marginTop:(2 / 100) * height_device,
+      marginBottom:(4 / 100) *  height_device,
+      height:(40 / 100) * height_device,
       width:'80%'
   },
   viewList:{
-    height:340,
+    height:(45 / 100) *  height_device,
     backgroundColor:'#fbf2c6',
     alignContent:'center',
     borderRadius:6,
-    left:20,
-    width:350
+    left:(5 / 100) * width_device,
+    width:(87/ 100) *  width_device
   }
 })

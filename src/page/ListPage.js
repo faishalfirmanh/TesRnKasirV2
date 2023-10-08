@@ -34,16 +34,9 @@ export default function ListPage({navigation}) {
     
 
     useEffect(()=>{
-        return ()=>{
-
-        }
-        if (code == '') {
-            ToastAndroid.showWithGravity(
-                'Harap generate kode',
-                ToastAndroid.SHORT,
-                ToastAndroid.CENTER
-            );
-        }
+        setLoading(false);
+        
+        
     },[])
 
     const keyboardShowListener = Keyboard.addListener( 
