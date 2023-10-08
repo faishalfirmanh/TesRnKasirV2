@@ -305,7 +305,7 @@ export default function ListKeranjang({navigation}) {
                       renderItem={itemRednerList}
                       keyExtractor={item => `${item.id_keranjang_kasir}`}
                     />
-                    <Text style={{color:'black',top:(8 / 100) *  height_device}}>Total : {rincianProd[0]} | bayar {convert_number_coma(price_bayar)}</Text>
+                    <Text style={{color:'black',top:(0.001 / 100) *  height_device,fontSize:15,fontWeight:'bold'}}>Total : {rincianProd[0]} | bayar {convert_number_coma(price_bayar)}</Text>
                  </View>
 
               )}
