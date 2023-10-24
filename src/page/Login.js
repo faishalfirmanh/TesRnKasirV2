@@ -1,12 +1,14 @@
 import { View, Text, Button, StyleSheet, TextInput, ToastAndroid, Dimensions, TouchableOpacity, Image } from 'react-native'
-import React,{useContext, useState} from 'react'
+import React,{useContext, useEffect, useState} from 'react'
 import { AppContext } from './../context/AppContext';
 import axios from 'axios';
-
+import AsyncStorage from '@react-native-community/async-storage';
 import url from './../endpoint/Endpoint';
 import { width_device } from '../style/StyleGlobal';
 import ButtonCustom from '../component/ButtonCustom';
 import { custom_toast } from '../component/ToastCustom';
+import { setStorageKey } from '../component/HelperFunction';
+import { getStorgaeKey } from '../component/HelperFunction';
 
 export default function Login({navigation}) {
 
@@ -28,7 +30,30 @@ export default function Login({navigation}) {
         })
     }
 
+    useEffect(() => {
+      const getKeyFunction = async()=>{
+        try {
+          let keyStorage = await AsyncStorage.getItem('keyLogin');
+          let storage_user = await AsyncStorage.getItem('userLogin');
+          console.log(JSON.parse(storage_user));
+          
+          if (keyStorage !== 'null') {
+            navigation.navigate('menu')
+          }
+          contexst.setUserLogin(JSON.parse(storage_user))
+        } catch (error) {
+          console.error('Error retrieving data from AsyncStorage:', error);
+          
+        }
+      }
+      getKeyFunction()
+    },[])
+    
+
     //
+
+    
+
     const submitToHomePage = async()=>{
         const email_user = emailParam;
         const pass_user = pass;
@@ -60,10 +85,16 @@ export default function Login({navigation}) {
           const data_api = result_api.data;
           if(data_api.message == "success login"){
             contexst.setUserLogin({data_api});
+            const jsonValue = JSON.stringify(data_api);
+            await AsyncStorage.setItem('userLogin',`${jsonValue}`);
+            console.log(jsonValue);
+            console.log(data_api.jwt_token);
+            setStorageKey(`${data_api.jwt_token}`)
             navigation.navigate('menu')
           }
           
           if (data_api.error) {
+            setStorageKey('null')
               if (data_api.error.email) {
                 custom_toast("Email tidak valid");
               }
@@ -71,6 +102,7 @@ export default function Login({navigation}) {
           // console.log(data_api);
         } catch (error) {
             let msg_error = error.response.data.message;
+            setStorageKey(`null`)
             ToastAndroid.showWithGravity(
               msg_error,
               ToastAndroid.SHORT,

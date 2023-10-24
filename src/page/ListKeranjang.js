@@ -4,12 +4,12 @@ import React, {useState, useEffect,useContext} from 'react'
 import { AppContext } from './../context/AppContext';
 import { css_global, height_device, width_device } from './../style/StyleGlobal';
 import url from './../endpoint/Endpoint';
-import { RequestApiPostWithToken, RequestApiNoPromise } from './../endpoint/RequestApi';
+import { RequestApiPostWithToken, RequestApiNoPromise , RequestApiNoPromiseConditionParam} from './../endpoint/RequestApi';
 import { custom_toast } from './../component/ToastCustom';
 import { convertNameProdcut, convert_number_coma } from './../component/HelperFunction';
 import ComponentLoading from '../component/ComponentLoading';
 import ButtonCustom from '../component/ButtonCustom';
-
+import AsyncStorage from '@react-native-community/async-storage';
 import ComponentTextInput from './../component/ComponentTextInput';
 
 export default function ListKeranjang({navigation}) {
@@ -20,11 +20,13 @@ export default function ListKeranjang({navigation}) {
   const [price_bayar, setPriceBayar ] = useState(0);
   const [kembalian, setPriceKembalian] = useState(0);
   const global_state = useContext(AppContext);
-  const token_ =  global_state.userLogin.data_api.jwt_token;
+  const token_ =  global_state.userLogin.jwt_token ?  global_state.userLogin.jwt_token :  global_state.userLogin.data_api.jwt_token//global_state.userLogin.data_api.jwt_token;
 
   useEffect(() => {
     refreshtList()
-    console.log('use effect did mount',isLoading);
+    console.log('use effect did mount list keranjang',global_state.userLogin);
+    // const struckId = global_state.product.id_trans
+    // console.log(struckId);
   }, [])
   
 
@@ -60,12 +62,15 @@ export default function ListKeranjang({navigation}) {
     setLabelPrice(0)
     setPriceBayar(0)
     setLoading(true)
-    const headers_config ={ headers: {"Authorization" : `Bearer ${token_}`}};
+    // const headers_config ={ headers: {"Authorization" : `Bearer ${token_}`}};
     const url_struck = `${url.end_point_dev}${url.get_struck}`;
     const param = {id_struck : `${global_state.product.id_trans}` }
-    RequestApiNoPromise(url_struck,param,token_)
-    .then((response)=>{
+    console.log('param-',param);
+    RequestApiNoPromiseConditionParam(url_struck,param,token_)
+    .then(function(response){
         const data_all = response.data.data[0].data;
+        console.log('sukses get keranjang');
+        console.log(data_all);
         const list_item = data_all.list
         if (list_item.length > 0) {
           const rincian_ = [ data_all.total_harga, data_all.dibayar, data_all.kembalian ]
@@ -77,8 +82,10 @@ export default function ListKeranjang({navigation}) {
         }
         setLoading(false);
     })
-    .catch( (error) =>{
+    .catch(function (error){
       const json_error = error.toJSON();
+      console.log('error get refresh keranjang');
+      console.log(json_error);
         if(json_error.status == 401) {
             custom_toast("Token expired harap login lagi, tunggu 2 detik")
             setTimeout(() => {

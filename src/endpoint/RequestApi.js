@@ -43,3 +43,14 @@ export const RequestApiNoPromise = async (url, param, token) => {
         throw error;
     }
 }
+
+export const RequestApiNoPromiseConditionParam = async (url, param, token) => {
+    const headers_config = { headers: {"Authorization" : `Bearer ${token}`},  'Content-Type': 'application/json'};
+    try {
+        const kondiis_param = param != null ? param : {};
+        const response = await axios.post(url, kondiis_param, headers_config);
+        return response;
+    } catch (error) {
+        throw error;
+    }
+}

@@ -16,8 +16,8 @@ import { css_global } from './../style/StyleGlobal';
 import ItemList from './../component/ItemList';
 
 import { AppContext } from './../context/AppContext';
-
-export default function BlueTootPage (){
+import AsyncStorage from '@react-native-community/async-storage';
+export default function BlueTootPage ({navigation}){
   const global_state_contexst = useContext(AppContext)
 
   const [pairedDevices, setPairedDevices] = useState([]);
@@ -26,6 +26,7 @@ export default function BlueTootPage (){
   const [loading, setLoading] = useState(true);
   const [name, setName] = useState('');
   const [boundAddress, setBoundAddress] = useState('');
+  const [cekLogin,setLoginStorage] = useState({})
 
   const cobaAllPrint = [
     {
@@ -81,6 +82,29 @@ export default function BlueTootPage (){
   ]
 
   useEffect(() => {
+
+    //cek login storage
+    const getKeyFunction = async()=>{
+      try {
+        let keyStorage = await AsyncStorage.getItem('keyLogin');
+        let storage_user = await AsyncStorage.getItem('userLogin');
+        //console.log(JSON.parse(storage_user));
+        console.log('bluetootpage',storage_user);
+        
+        if(keyStorage == 'null') {
+          navigation.navigate('login')
+        }
+        if (storage_user == null) {
+          navigation.navigate('login')
+        }
+      } catch (error) {
+        console.error('Error retrieving data from AsyncStorage:', error);
+      }
+    }
+    getKeyFunction()
+   
+    //cek login storage
+
     BluetoothManager.isBluetoothEnabled().then(
       enabled => {
         setBleOpend(Boolean(enabled));

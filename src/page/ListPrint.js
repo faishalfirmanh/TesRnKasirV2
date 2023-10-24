@@ -13,7 +13,7 @@ import ButtonCustom from '../component/ButtonCustom';
 
 export default function ListPrint({navigation}) {
   const global_state = useContext(AppContext);
-  const token_ =  global_state.userLogin.data_api.jwt_token;
+  const token_ = global_state.userLogin.jwt_token ?  global_state.userLogin.jwt_token :  global_state.userLogin.data_api.jwt_token; //global_state.userLogin.jwt_token;//global_state.userLogin.data_api.jwt_token;
   const [isLoading, setLoading] = useState(true);
   const [listProd, setProd] = useState({});
   const [priceBayar, setPriceBayar] = useState(0);

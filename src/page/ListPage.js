@@ -14,16 +14,18 @@ import { css_global, height_device, width_device } from './../style/StyleGlobal'
 import { AppContext } from './../context/AppContext';
 import axios from 'axios';
 import url from './../endpoint/Endpoint';
-import { RequestApiPostWithToken,RequestApiNoPromise } from './../endpoint/RequestApi';
+import { RequestApiPostWithToken,RequestApiNoPromise,RequestApiNoPromiseConditionParam } from './../endpoint/RequestApi';
 import { custom_toast } from './../component/ToastCustom';
 import ButtonCustom from '../component/ButtonCustom';
 import ComponentLoading from '../component/ComponentLoading';
 import ComponentTextInput from '../component/ComponentTextInput';
+import AsyncStorage from '@react-native-community/async-storage';
 
 export default function ListPage({navigation}) {
 
     const global_state = useContext(AppContext);
-    const token_ =  global_state.userLogin.data_api.jwt_token;
+    const token_ = global_state.userLogin.jwt_token ?  global_state.userLogin.jwt_token :  global_state.userLogin.data_api.jwt_token
+    ///global_state.userLogin.data_api.jwt_token;
 
     const [isLoading, setLoading] = useState(true);
     const [keyboard, setKeyboard] = useState(false);
@@ -35,8 +37,11 @@ export default function ListPage({navigation}) {
 
     useEffect(()=>{
         setLoading(false);
-        
-        
+        if (global_state.userLogin == null || global_state.userLogin == 'null') {
+            navigation.navigate('login')
+        }
+        console.log('global state list page',global_state.userLogin);
+        return () => {};
     },[])
 
     const keyboardShowListener = Keyboard.addListener( 
@@ -54,12 +59,11 @@ export default function ListPage({navigation}) {
     ); 
   
 
-    const generateNewStruck = async () =>{
-        const toko_id = global_state.userLogin.data_api.toko.id_toko
+    const generateNewStruck = async() =>{
         const url_generate = `${url.end_point_dev}${url.generate}`
-        const headers_config = { headers: {"Authorization" : `Bearer ${token_}`}};
+        console.log(token_);
         setLoading(true);
-        axios.post(url_generate,{},headers_config)
+        RequestApiNoPromiseConditionParam(url_generate,null,token_)
         .then(function (res_success_api) {
             const id_trans = res_success_api.data.data.id_struck.toString();
             global_state.setProduct({id_trans : id_trans});
@@ -77,7 +81,11 @@ export default function ListPage({navigation}) {
                 }, 2000);
             }
            if (error.response.data) {
-              custom_toast(error.response.data.msg)
+            if (error.response.data.status == 'Token is Invalid') {
+                custom_toast("Token is Invalid")
+            }else{
+                custom_toast(error.response.data.msg)
+            }
               global_state.setProduct({id_trans : null});
            }
            
@@ -116,6 +124,7 @@ export default function ListPage({navigation}) {
                     const send_api = await RequestApiPostWithToken(url_api_req,send_param,token_)
                     if (send_api.data.total_data > 0) {
                         console.log('data ada');
+                        console.log('set data product list',send_api.data.data);
                         setProduct(send_api.data.data)
                     }else{
                         setProduct(send_api.data.data)
