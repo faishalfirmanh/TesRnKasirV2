@@ -230,13 +230,13 @@ export default function ListKeranjang({navigation}) {
         <View style={{flex:1,flexDirection:'row'}}>
           <TouchableOpacity 
             onPress={(e)=>addChartPlus1(id_chart)}
-            style={{backgroundColor:'blue',width:(10 / 100) * width_device,height:(10 / 100) * width_device,top:(2 / 100) * width_device, borderRadius:8}}>
-            <Text style={{textAlign:'center',top:6,fontSize:18,color:'white'}}>+</Text>
+            style={{backgroundColor:'blue',width:(10 / 100) * width_device,height:(10 / 100) * width_device,top:(2 / 100) * width_device, borderRadius:8,...css_global.centerItemButton}}>
+            <Text style={{textAlign:'center',fontSize:18,color:'white'}}>+</Text>
           </TouchableOpacity>
           <TouchableOpacity 
             onPress={(e)=>removeChartMin1(id_chart)}
-            style={{backgroundColor:'blue',width:(10 / 100) * width_device,height:(10 / 100) * width_device,top:(2 / 100) * width_device,left:10, borderRadius:8}}>
-            <Text style={{textAlign:'center',fontSize:30,marginTop:-6,color:'white'}}>-</Text>
+            style={{backgroundColor:'blue',width:(10 / 100) * width_device,height:(10 / 100) * width_device,top:(2 / 100) * width_device,left:10, borderRadius:8,...css_global.centerItemButton}}>
+            <Text style={{textAlign:'center',fontSize:30,color:'white'}}>-</Text>
           </TouchableOpacity>
           <TouchableOpacity 
             onPress={(e)=>deleteChart(id_chart)}

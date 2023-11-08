@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import React, {useEffect} from 'react'
-import { height_device } from '../style/StyleGlobal'
+import { height_device, css_global } from '../style/StyleGlobal'
 
 
 export default function ButtonCustom({
@@ -32,11 +32,10 @@ const height_btn = (persent_h / 100) * height_device
                 borderRadius:7,
                 borderWidth:1,
                 borderColor: isSuccess ? 'green' : 'red',
+                ...css_global.centerItemButton
             }}>
           <Text style={{
                 fontSize:font_size_fix,
-                marginTop:10,
-                margin:12,
                 color:  isSuccess ? 'green' : 'red',
                 fontWeight:'500'
             }}>

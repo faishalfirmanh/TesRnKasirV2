@@ -38,6 +38,8 @@ export default function Acount({navigation}) {
   return (
     <View style={{ flex: 1,justifyContent: 'center', alignItems: 'center'}}>
        <ButtonCustom
+        widthCusBtn={90}
+        heightBtnPercentDevice={5}
         text={"Logout"} 
         isSuccess={false} 
         btnOnSubmitProps={() => logout()}

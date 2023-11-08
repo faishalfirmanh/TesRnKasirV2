@@ -83,27 +83,7 @@ export default function BlueTootPage ({navigation}){
 
   useEffect(() => {
 
-    //cek login storage
-    const getKeyFunction = async()=>{
-      try {
-        let keyStorage = await AsyncStorage.getItem('keyLogin');
-        let storage_user = await AsyncStorage.getItem('userLogin');
-        //console.log(JSON.parse(storage_user));
-        console.log('bluetootpage',storage_user);
-        
-        if(keyStorage == 'null') {
-          navigation.navigate('login')
-        }
-        if (storage_user == null) {
-          navigation.navigate('login')
-        }
-      } catch (error) {
-        console.error('Error retrieving data from AsyncStorage:', error);
-      }
-    }
-    getKeyFunction()
-   
-    //cek login storage
+    
 
     BluetoothManager.isBluetoothEnabled().then(
       enabled => {
@@ -261,6 +241,26 @@ export default function BlueTootPage ({navigation}){
         // ignore
       },
     );
+    //cek login storage
+    const getKeyFunction = async()=>{
+      try {
+        let keyStorage = await AsyncStorage.getItem('keyLogin');
+        let storage_user = await AsyncStorage.getItem('userLogin');
+        //console.log(JSON.parse(storage_user));
+        console.log('bluetootpage',storage_user);
+        
+        if(keyStorage == 'null') {
+          navigation.navigate('login')
+        }
+        if (storage_user == null) {
+          navigation.navigate('login')
+        }
+      } catch (error) {
+        console.error('Error retrieving data from AsyncStorage:', error);
+      }
+    }
+    getKeyFunction()
+    //cek login storage
   }, [foundDs]);
 
   const scan = useCallback(() => {

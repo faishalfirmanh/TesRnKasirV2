@@ -51,5 +51,9 @@ export const css_global = StyleSheet.create({
     },
     borderBlack :{
         borderColor:'black',
+    },
+    centerItemButton:{
+        justifyContent: "center",
+        alignItems: "center",
     }
 })

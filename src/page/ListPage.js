@@ -41,7 +41,7 @@ export default function ListPage({navigation}) {
             navigation.navigate('login')
         }
         console.log('global state list page',global_state.userLogin);
-        return () => {};
+      
     },[])
 
     const keyboardShowListener = Keyboard.addListener( 

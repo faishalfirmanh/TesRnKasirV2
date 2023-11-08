@@ -155,7 +155,7 @@ export default function Login({navigation}) {
         onPress={() => submitToHomePage()}
       /> */}
       {/* <Button title="Set state" onPress ={()=>contexst.setUser({name:'ini state'})}/> */}
-      <ButtonCustom mTop={20} text={"Login"} isSuccess={true} btnOnSubmitProps={() => submitToHomePage()}/>
+      <ButtonCustom  widthCusBtn={100} heightBtnPercentDevice={5} mTop={20} text={"Login"} isSuccess={true} btnOnSubmitProps={() => submitToHomePage()}/>
       
     </View>
   )
