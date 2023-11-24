@@ -9,7 +9,7 @@ import { View,
     Keyboard
  } from 'react-native'
 import React, {useState, useEffect,useContext} from 'react'
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { getStorgaeKey } from '../component/HelperFunction';
 import { css_global, height_device, width_device } from './../style/StyleGlobal';
 import { AppContext } from './../context/AppContext';
 import axios from 'axios';
@@ -24,15 +24,17 @@ import AsyncStorage from '@react-native-community/async-storage';
 export default function ListPage({navigation}) {
 
     const global_state = useContext(AppContext);
-    const token_ = global_state.userLogin.jwt_token ?  global_state.userLogin.jwt_token :  global_state.userLogin.data_api.jwt_token
+    //const token_ = global_state.userLogin.jwt_token ?  global_state.userLogin.jwt_token :  global_state.userLogin.data_api.jwt_token
     ///global_state.userLogin.data_api.jwt_token;
+   
 
     const [isLoading, setLoading] = useState(true);
     const [keyboard, setKeyboard] = useState(false);
     const [code, setCode] = useState('')
     const [inputProd, setInputProd] = useState({})
     const [totolProd, setTotalProd] = useState('1');
-    const [product, setProduct] = useState({})
+    const [product, setProduct] = useState({});
+    const [token_, setTokenKey] = useState('null');
     
 
     useEffect(()=>{
@@ -40,7 +42,16 @@ export default function ListPage({navigation}) {
         if (global_state.userLogin == null || global_state.userLogin == 'null') {
             navigation.navigate('login')
         }
-        console.log('global state list page',global_state.userLogin);
+        const getKeyFunction = async()=>{
+            try {
+              let keyStorage = await AsyncStorage.getItem('keyLogin');
+              setTokenKey(keyStorage);
+              console.log('KEYinListPage',keyStorage);
+            } catch (error) {
+              console.error('Error retrieving data from AsyncStorage:', error);
+            }
+          }
+          getKeyFunction();
       
     },[])
 

@@ -21,18 +21,20 @@ export default function Acount({navigation}) {
          try {
             let keyStorage = await AsyncStorage.getItem('keyLogin');
             let storage_user = await AsyncStorage.getItem('userLogin');
-            if(keyStorage == 'null') {
+            console.log('account',keyStorage);
+            if(keyStorage == null) {
               navigation.navigate('login')
-            }
-            if (storage_user == null) {
+            }else if (storage_user == null) {
               navigation.navigate('login')
+            }else{
+              setTokenStore(keyStorage);
             }
-            setTokenStore(keyStorage);
+           
           } catch (error) {
             console.error('Error retrieving data from AsyncStorage:', error);
           }
       }
-      getKeyFunction()
+       getKeyFunction()
     },[])
 
   const logout = async () =>{
@@ -43,14 +45,15 @@ export default function Acount({navigation}) {
         const reqapi = await RequestApiPostGenerate(url_logout,tokenStor)
         if (reqapi.status == 200) {
             custom_toast("Logout berhasil tunggu sebentar")
-            await AsyncStorage.setItem('userLogin','null');
+            await AsyncStorage.setItem('userLogin','null');//kalau tidak diset string null, di lempar ke catch
             await AsyncStorage.setItem('keyLogin','null');
+            global_state.setUserLogin(null);
             setTimeout(() => {
                 navigation.navigate('login')
             }, 2000);
         }
      } catch (error) {
-        console.log(error);
+        console.log('error logout',error);
         custom_toast("Logout gagal")
      }
   }

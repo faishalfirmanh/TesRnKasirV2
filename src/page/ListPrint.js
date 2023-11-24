@@ -4,7 +4,7 @@ import { RequestApiPostWithToken, RequestApiNoPromise } from './../endpoint/Requ
 import { custom_toast } from './../component/ToastCustom';
 import { convert_number_coma,convertNameProdcut, date_now_wib } from './../component/HelperFunction';
 import { BluetoothEscposPrinter } from 'react-native-bluetooth-escpos-printer';
-
+import AsyncStorage from '@react-native-community/async-storage';
 import { AppContext } from './../context/AppContext';
 import url from './../endpoint/Endpoint';
 import { css_global } from './../style/StyleGlobal';
@@ -13,25 +13,37 @@ import ButtonCustom from '../component/ButtonCustom';
 
 export default function ListPrint({navigation}) {
   const global_state = useContext(AppContext);
-  const token_ = global_state.userLogin.jwt_token ?  global_state.userLogin.jwt_token :  global_state.userLogin.data_api.jwt_token; //global_state.userLogin.jwt_token;//global_state.userLogin.data_api.jwt_token;
+  //const token_ =  global_state.userLogin.jwt_token ?  global_state.userLogin.jwt_token :  global_state.userLogin.data_api.jwt_token; //global_state.userLogin.jwt_token;//global_state.userLogin.data_api.jwt_token;
   const [isLoading, setLoading] = useState(true);
   const [listProd, setProd] = useState({});
   const [priceBayar, setPriceBayar] = useState(0);
   const [priceKembalian, setPriceKembalian] = useState(0);
   const [priceTotal, setTotal] = useState(0);
   const [dateStruck, setDate] = useState({})
+  const [token_state, setTokenState] = useState('null');
 
   useEffect(() => {
-    reqViewStruck()
+    const getKeyFunction = async()=>{
+      try {
+        let keyStorage = await AsyncStorage.getItem('keyLogin');
+        setTokenState(keyStorage);
+      } catch (error) {
+        console.error('Error retrieving data from AsyncStorage:', error);
+      }
+      reqViewStruck()
+    }
+    getKeyFunction();
+    
     console.log(global_state.dataBlueTooth);
   }, [])
   
 
-  const reqViewStruck = ()=>{
+  const reqViewStruck = async()=>{
       setLoading(true)
       const url_struck = `${url.end_point_dev}${url.get_struck}`;
+      const tokeNya = await AsyncStorage.getItem('keyLogin');
       const param = {id_struck : `${global_state.product.id_trans}` }
-      RequestApiNoPromise(url_struck,param,token_)
+      RequestApiNoPromise(url_struck,param,tokeNya)
       .then((response)=>{
           const data_res = response.data.data[0].data;
           setProd(data_res.list)
@@ -39,6 +51,7 @@ export default function ListPrint({navigation}) {
           setPriceKembalian(data_res.kembalian)
           setTotal(data_res.total_harga)
           setDate(data_res.tanggal)
+          console.log('listPrint',response);
       })
       .catch((error)=>{
         const json_error = error.toJSON();

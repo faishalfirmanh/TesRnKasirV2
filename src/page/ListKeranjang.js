@@ -20,9 +20,21 @@ export default function ListKeranjang({navigation}) {
   const [price_bayar, setPriceBayar ] = useState(0);
   const [kembalian, setPriceKembalian] = useState(0);
   const global_state = useContext(AppContext);
-  const token_ =  global_state.userLogin.jwt_token ?  global_state.userLogin.jwt_token :  global_state.userLogin.data_api.jwt_token//global_state.userLogin.data_api.jwt_token;
+  //const token_ =  AsyncStorage.getItem('keyLogin');//  global_state.userLogin.jwt_token ?  global_state.userLogin.jwt_token :  global_state.userLogin.data_api.jwt_token//global_state.userLogin.data_api.jwt_token;
+  const [token_, setTokenKey] = useState('null');
 
   useEffect(() => {
+    const getKeyFunction = async()=>{
+      try {
+        let keyStorage = await AsyncStorage.getItem('keyLogin');
+        setTokenKey(keyStorage);
+        console.log('KEYinKeranjang',keyStorage);
+      } catch (error) {
+        console.error('Error retrieving data from AsyncStorage:', error);
+      }
+    }
+    getKeyFunction();
+
     refreshtList()
     console.log('use effect did mount list keranjang',global_state.userLogin);
     // const struckId = global_state.product.id_trans
@@ -63,10 +75,12 @@ export default function ListKeranjang({navigation}) {
     setPriceBayar(0)
     setLoading(true)
     // const headers_config ={ headers: {"Authorization" : `Bearer ${token_}`}};
+    const tokenNya = await AsyncStorage.getItem('keyLogin')
+    
     const url_struck = `${url.end_point_dev}${url.get_struck}`;
     const param = {id_struck : `${global_state.product.id_trans}` }
     console.log('param-',param);
-    RequestApiNoPromiseConditionParam(url_struck,param,token_)
+    RequestApiNoPromiseConditionParam(url_struck,param,tokenNya)
     .then(function(response){
         const data_all = response.data.data[0].data;
         console.log('sukses get keranjang');

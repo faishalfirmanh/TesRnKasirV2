@@ -35,12 +35,24 @@ export default function Login({navigation}) {
         try {
           let keyStorage = await AsyncStorage.getItem('keyLogin');
           let storage_user = await AsyncStorage.getItem('userLogin');
-          console.log(JSON.parse(storage_user));
-          
-          if (keyStorage !== 'null') {
-            navigation.navigate('menu')
+          if (typeof(keyStorage) == 'object') {
+            if (keyStorage != null) {
+              navigation.navigate('menu')
+            }else if(storage_user != null){
+              navigation.navigate('menu')
+            } else{
+              contexst.setUserLogin(JSON.parse(storage_user))
+            }
+          } else {
+            if (keyStorage != 'null') {
+              navigation.navigate('menu')
+            }else if(storage_user != 'null'){
+              navigation.navigate('menu')
+            } else{
+              contexst.setUserLogin(JSON.parse(storage_user))
+            }
           }
-          contexst.setUserLogin(JSON.parse(storage_user))
+          
         } catch (error) {
           console.error('Error retrieving data from AsyncStorage:', error);
           
@@ -87,9 +99,9 @@ export default function Login({navigation}) {
             contexst.setUserLogin({data_api});
             const jsonValue = JSON.stringify(data_api);
             await AsyncStorage.setItem('userLogin',`${jsonValue}`);
-            console.log(jsonValue);
-            console.log(data_api.jwt_token);
-            setStorageKey(`${data_api.jwt_token}`)
+            console.log('login-sukses',jsonValue);
+            console.log('JWT--',data_api.jwt_token);
+            setStorageKey(data_api.jwt_token)
             navigation.navigate('menu')
           }
           
@@ -101,6 +113,7 @@ export default function Login({navigation}) {
           }
           // console.log(data_api);
         } catch (error) {
+          contexst.setUserLogin(null);
             let msg_error = error.response.data.message;
             setStorageKey(`null`)
             ToastAndroid.showWithGravity(
