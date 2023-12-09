@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, TouchableOpacity, FlatList,
-  Image, Keyboard } from 'react-native'
+  Image, Keyboard, TextInput } from 'react-native'
 import React, {useState, useEffect,useContext} from 'react'
 import { AppContext } from './../context/AppContext';
 import { css_global, height_device, width_device } from './../style/StyleGlobal';
@@ -17,6 +17,7 @@ export default function ListKeranjang({navigation}) {
   const [productKeranjang, setProductKeranjang] = useState({})
   const [rincianProd, setRincianProd] = useState([]);
   const [label_price, setLabelPrice] = useState(0);
+  const [name_pembeli_val, setNamaPembeli] = useState("");
   const [price_bayar, setPriceBayar ] = useState(0);
   const [kembalian, setPriceKembalian] = useState(0);
   const global_state = useContext(AppContext);
@@ -55,6 +56,17 @@ export default function ListKeranjang({navigation}) {
     
   }
 
+  const inputNamaPembeli = (val) =>{
+    if (val.length > 0) {
+      setNamaPembeli(val)
+      console.log("ada nama",val);
+    }else{
+      setNamaPembeli("")
+      console.log("tidak ada nama");
+    }
+    
+  }
+
 
   const CallApiGetStruck = async () =>{
      const url_struck = `${url.end_point_dev}${url.get_struck}`;
@@ -79,12 +91,12 @@ export default function ListKeranjang({navigation}) {
     
     const url_struck = `${url.end_point_dev}${url.get_struck}`;
     const param = {id_struck : `${global_state.product.id_trans}` }
-    console.log('param-',param);
+    //console.log('param-',param);
     RequestApiNoPromiseConditionParam(url_struck,param,tokenNya)
     .then(function(response){
         const data_all = response.data.data[0].data;
-        console.log('sukses get keranjang');
-        console.log(data_all);
+        // console.log('sukses get keranjang');
+        // console.log(data_all);
         const list_item = data_all.list
         if (list_item.length > 0) {
           const rincian_ = [ data_all.total_harga, data_all.dibayar, data_all.kembalian ]
@@ -98,8 +110,8 @@ export default function ListKeranjang({navigation}) {
     })
     .catch(function (error){
       const json_error = error.toJSON();
-      console.log('error get refresh keranjang');
-      console.log(json_error);
+      // console.log('error get refresh keranjang');
+      // console.log(json_error);
         if(json_error.status == 401) {
             custom_toast("Token expired harap login lagi, tunggu 2 detik")
             setTimeout(() => {
@@ -139,7 +151,7 @@ export default function ListKeranjang({navigation}) {
   }
 
   const addChartPlus1 =  (idChart) =>{
-    console.log("awal",isLoading);
+    //console.log("awal",isLoading);
     setLoading(true);
     const url_add1 = `${url.end_point_dev}${url.add_plus_1}`;
     const param = {id_keranjang_kasir : idChart }
@@ -187,15 +199,22 @@ export default function ListKeranjang({navigation}) {
 
   }
 
+
  
 
   const reqApiInputUserBeli = () =>{
     setLoading(true);
     const url_bayar = `${url.end_point_dev}${url.price_user_bayar}`
-    const param = { id_struck : global_state.product.id_trans, user_bayar : price_bayar }
+    
+    //cek nama pembeli ada
+    const param = name_pembeli_val.length > 0 ? 
+      { id_struck : global_state.product.id_trans, user_bayar : price_bayar, nama_pembeli : name_pembeli_val }
+      :
+      { id_struck : global_state.product.id_trans, user_bayar : price_bayar }
+   
     RequestApiNoPromise(url_bayar, param, token_)
     .then((response)=>{
-      console.log(response);
+      //console.log(response);
       const res_success = response.data.data;
       const bayar_res = res_success.pembeli_bayar;
       const kembalian_res = res_success.kembalian;
@@ -227,7 +246,7 @@ export default function ListKeranjang({navigation}) {
   }
 
   const itemRednerList = ({item, index}) =>{
-    console.log('tess--',item);
+    //console.log('tess--',item);
     const id_chart = item.id_keranjang_kasir;
     return(
       <View style={{height:(22 / 100) * height_device,left:10,top:10}}>
@@ -278,16 +297,37 @@ export default function ListKeranjang({navigation}) {
        style={css_global.buttonStyle}>
         <Text style={css_global.textStyleButton}>Refresh</Text>
       </TouchableOpacity> */}
-      <ButtonCustom
-         mLeft={(3 / 100) *  width_device}
-         mTop={(1 / 100) *  height_device}
-         f_size={13}
-         widthCusBtn={(11 / 100) *  height_device}
-         heightBtnPercentDevice={5}
-         text={"Refresh"} 
-         isSuccess={true} 
-         btnOnSubmitProps={() => refreshtList()}
-      />
+      <View style={{flexDirection:'row'}}>
+          <ButtonCustom
+            mLeft={(3 / 100) *  width_device}
+            mTop={(1 / 100) *  height_device}
+            f_size={13}
+            widthCusBtn={(11 / 100) *  height_device}
+            heightBtnPercentDevice={5}
+            text={"Refresh"} 
+            isSuccess={true} 
+            btnOnSubmitProps={() => refreshtList()}
+          />
+
+        <TextInput
+          placeholder="input nama pembeli (max 20)"
+          placeholderTextColor="grey"
+          onChangeText={(e)=>inputNamaPembeli(e)}
+          maxLength={19}
+          style={{  
+            height: (5 / 100) *  height_device,
+            marginTop:7,
+            marginLeft:(5 / 100) * width_device,
+            width: (55 / 100) * width_device,
+            borderWidth: 1.5,
+            borderRadius:4,
+            color:'black',
+            backgroundColor:'white',
+            paddingLeft:10,
+          }}
+        />
+      </View>
+     
       
       <Text style={css_global.textStyle}>Masukkan uang pembeli</Text>
       <Text style={{backgroundColor:'white', top:5,left:12,textAlign:'left',color:'black'}}>
