@@ -20,6 +20,7 @@ export default function ListPrint({navigation}) {
   const [priceKembalian, setPriceKembalian] = useState(0);
   const [priceTotal, setTotal] = useState(0);
   const [dateStruck, setDate] = useState({})
+  const [name_buyer, setNameBuyer] = useState("")
   const [token_state, setTokenState] = useState('null');
 
   useEffect(() => {
@@ -51,7 +52,8 @@ export default function ListPrint({navigation}) {
           setPriceKembalian(data_res.kembalian)
           setTotal(data_res.total_harga)
           setDate(data_res.tanggal)
-          console.log('listPrint',response);
+          setNameBuyer(data_res.nama_pembeli)
+          //console.log('listPrint',data_res.nama_pembeli);
       })
       .catch((error)=>{
         const json_error = error.toJSON();
@@ -117,7 +119,7 @@ export default function ListPrint({navigation}) {
       '================================ \n',
       {},
     );
-    await BluetoothEscposPrinter.printText(`Total belanjan  :  ${priceTotal} \n \n`, {
+    await BluetoothEscposPrinter.printText(`Total belanja  :  ${priceTotal} \n \n`, {
       encoding: 'GBK',
       codepage: 0,
       widthtimes: 0,
@@ -138,6 +140,15 @@ export default function ListPrint({navigation}) {
       heigthtimes: 0,
       fonttype: 1,
     })
+    if (name_buyer != null) {
+      await BluetoothEscposPrinter.printText(`pembeli  :  ${name_buyer} \n \n`, {
+        encoding: 'GBK',
+        codepage: 0,
+        widthtimes: 0,
+        heigthtimes: 0,
+        fonttype: 1,
+      })
+    }
     await BluetoothEscposPrinter.printText(
       '-------------------------------- \n',
       {},
@@ -202,9 +213,15 @@ export default function ListPrint({navigation}) {
             }
             {
               isLoading ? <ActivityIndicator/> :
-              <View style={{backgroundColor:'white',left:20,marginTop:0,borderRadius:8,height:60}}>
+              <View style={{backgroundColor:'white',left:20,marginTop:0,borderRadius:8,height:70}}>
                 <Text style={{color:'black',left:10}}>Total : {priceTotal} | bayar {convert_number_coma(priceBayar)}</Text>
                 <Text style={{color:'black',left:10}}>Kembalian : {priceKembalian}</Text>
+                { name_buyer != null ?
+                  <Text style={{color:'black',left:10, marginBottom:10}}>Pembeli : {name_buyer}</Text>
+                  :
+                  <View></View>
+                 
+                }
               </View>
             }
       </View>
