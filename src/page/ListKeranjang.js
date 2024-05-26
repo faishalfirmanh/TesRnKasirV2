@@ -118,7 +118,20 @@ export default function ListKeranjang({navigation}) {
                 navigation.navigate('login')
             }, 2000);
         }else{
-          custom_toast("Eror get keranjang")
+          if (json_error.status == 404) {
+            setProductKeranjang(0)
+            setRincianProd(0)
+            setPriceBayar(0)
+            custom_toast("keranjang kosong")
+            setTimeout(() => {
+              navigation.navigate('input')
+            }, 1000);
+          }else{
+            custom_toast("Eror get keranjang")
+          }
+          console.log(json_error.status)
+         
+          
         }
         setLoading(false);
     })
@@ -132,7 +145,9 @@ export default function ListKeranjang({navigation}) {
       
       RequestApiNoPromise(url_min1, param, token_)
       .then((suk)=>{
+        custom_toast("sukses hapus keranjang")
         refreshtList()
+        console.log("susses remove 1",suk.data)
       })
       .catch((err)=>{
           const json_error = err.toJSON();
@@ -157,6 +172,8 @@ export default function ListKeranjang({navigation}) {
     const param = {id_keranjang_kasir : idChart }
     RequestApiNoPromise(url_add1,param,token_)
     .then((suk)=>{
+      console.log("sukses add plus 1",suk);
+      custom_toast("sukses tambah keranjang")
       refreshtList()
     })
     .catch( (error) =>{
@@ -184,11 +201,24 @@ export default function ListKeranjang({navigation}) {
       })
       .catch((err)=>{
           const json_error = err.toJSON();
+          console.log("error hapus ",err.response)
+          console.log(err)
+          console.log(json_error.status)
+          
           if(json_error.status == 401) {
               custom_toast("Token expired harap login lagi, tunggu 2 detik")
               setTimeout(() => {
                   navigation.navigate('login')
               }, 2000);
+          }else if(json_error.status == 404){
+            setProductKeranjang(0)
+            setRincianProd(0)
+            setPriceBayar(0)
+            custom_toast("keranjang, harap generate transaksi ulang")
+            setTimeout(() => {
+              navigation.navigate('input')
+            }, 500);
+           
           }else{
             custom_toast("gagal hapus keranjang")
           }

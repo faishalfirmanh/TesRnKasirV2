@@ -205,18 +205,30 @@ export default function ListPage({navigation}) {
                 custom_toast("sukses menambahkan ke keranjang");
             })
             .catch( (error) =>{
-                if (error.response.status == 401) {
-                    custom_toast("Token expired harap login lagi, tunggu 2 detik")
-                    setTimeout(() => {
-                        navigation.navigate('login')
-                    }, 2000);
+                console.log("error add suggest",error.data);
+                if (error.data == undefined) {
+                    if (error.response.status == 401) {
+                        custom_toast("Token expired harap login lagi, tunggu 2 detik")
+                        setTimeout(() => {
+                            navigation.navigate('login')
+                        }, 2000);
+                    }
+                    else if (error.response.status == 404) {
+                        console.log("kode transaksi kosong");
+                        setCode("");
+                        custom_toast("harap generate ulang kode transaksi")
+                    }
+                }else{
+                    if (error.response.data.data[0].data.msg) {
+                        custom_toast("gagal tambah keranjang, struck tidak mencukupi")
+                    }
+                    else if (error.response.data.data[0].data.jumlah_item_dibeli) {
+                        custom_toast(error.response.data.data[0].data.jumlah_item_dibeli)
+                    }
                 }
-                if (error.response.data.data[0].data.msg) {
-                    custom_toast("gagal tambah keranjang, stuck tidak mencukupi")
-                }
-                if (error.response.data.data[0].data.jumlah_item_dibeli) {
-                    custom_toast(error.response.data.data[0].data.jumlah_item_dibeli)
-                }
+                
+                
+                
             })
         }
        
